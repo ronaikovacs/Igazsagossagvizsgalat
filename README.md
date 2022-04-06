@@ -1,0 +1,2 @@
+# Igazsagossagvizsgalat
+* Kivonat helye *
