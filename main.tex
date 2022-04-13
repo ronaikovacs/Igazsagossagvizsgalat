@@ -28,6 +28,7 @@
 \newcommand{\vect}[1]{ \underline{#1} }
 \newcommand{\norm}[1]{ \parallel {#1} \parallel }
 \newcommand{\pl}{ \textbf{Példa:} }
+\newcommand{\ent}[2]{ {#1}^{(#2)} }
 
 \begin{document}
 
@@ -240,7 +241,7 @@
             Mivel $f$ csak adott bemenetre ad számszerű értéket (\ref{thm:trihotomia}), ismerjük a teljes lehetséges értékkészletet minden paraméterre. Ebben az esetben (tehát mindig) belátható, hogy 
             $$ \nu_i(\varepsilon) : [r_1; r_2] \to [0; 1], $$
             ahol $r_1 = \arg_\varepsilon\min(\varepsilon_i)$ és $r_2 = \arg_\varepsilon\max(\varepsilon_i)$.
-            Tudjuk, hogy minden entitásra igaz, hogy azonos paramétereik között a relációs viszony megmarad (\ref{def:norm}), így $\nu_i$ maga is megfelel a normalizáció fogalmának. Ekkor könnyen választhatunk egy olyan értékkészletet, amely az eredeti paraméter értelmezési tartománya. Ezzel megalkottuk $\nu$ inverzét. (És megállapítottuk, hogy $\nu$ bijektív).
+            Tudjuk, hogy minden entitásra igaz, hogy azonos paramétereik között a relációs viszony megmarad (\ref{def:norm}), így $\nu_i^{-1}$ maga is megfelel a normalizáció fogalmának. Ekkor könnyen választhatunk egy olyan értékkészletet, amely az eredeti paraméter értelmezési tartománya. Ezzel megalkottuk $\nu$ inverzét. (És megállapítottuk, hogy $\nu$ bijektív).
         \end{proof}
         \begin{megj}
             Ezzel beláttuk, hogy normalizáció során nem történik információvesztés.
@@ -252,7 +253,7 @@
     
     Ennek azonban feltétele volt, hogy az osztályok, az entitások, és azok paraméterei egymástól függetlenek legyenek. Ez főként a $p$ függvény (\ref{megj:param_func}) megalkotásában jelentős szempont.
     
-    A másik aggály, ami felmerülhet, hogy (véges pontosságú eszközök miatt) egyes adatok irrelevánssá válhatnak a normalizáció során. Például lehetnek olyan paraméterek, melyeket nem lineárisan, hanem logaritmikusan kell normálni, mivel maguk a paraméterek exponenciálisak. Ez a probléma elkerülhető, ha a normalizációs ($\nu$) függvényeket minden paraméterre körültekintően választjuk meg. Ez talán még automatizálható is regressziókkal.
+    A másik aggály, ami felmerülhet, hogy (véges pontosságú eszközök miatt) egyes adatok irrelevánssá válhatnak a normalizáció során. Például lehetnek olyan paraméterek, melyeket nem lineárisan, hanem logaritmikusan kell normálni, mivel maguk a paraméterek exponenciálisak. Ez a probléma elkerülhető, ha a normalizációs ($\nu_i$) függvényeket minden paraméterre körültekintően választjuk meg. Ez talán még automatizálható is regressziókkal.
     
     Ha a normalizáció során elérjük, hogy a skálán elhelyezkedő értékek ugyanolyan eloszlásúak legyenek (lehetőleg lineárisak), akkor tetszőleges paraméter {\it tekinthető} lineárisnak. Ennek jelentősége a továbbiakban jelentős, hiszen ezzel elérjük, hogy két entitás távolságának számításakor a paraméterek homogének legyenek eloszlás szempontjából (tehát ne kelljen minden paraméterre meghatározni egy "távolságbefolyásolási tényezőt", vagy hasonlót).
     
@@ -263,7 +264,7 @@
     Mivel a bemeneteken azok a paraméterek, melyeket csak a beosztás befolyásol nem lesznek egymástól távoliak (mindegyik alapértéken lesz), feltehető, hogy a bemeneteken a távolságok kisebbek, mint a kimeneten:
     $$ d_{in}(x, y) \leq d_{out}(x, y) $$
     
-    Ugyanezt megfogalmazhatjuk egyszerűbben, ha a be és kimeneten ugyanaz a függvény méri a távolságot ($d_{in} \Longleftrightarrow d_{out}$):
+    Ugyanezt megfogalmazhatjuk egyszerűbben, ha a be és kimeneten ugyanaz a függvény méri a távolságot ($d_{in} \Leftrightarrow d_{out}$):
     \begin{equation}
         d(\subin{x}, \subin{y}) \leq d(\subout{x}, \subout{y})
     \end{equation}
@@ -275,37 +276,89 @@
         \begin{equation}
             d: \mathbb{R}^{2|e|} \to \mathbb{R}
         \end{equation}
+        ahol $|e|$ az $e$ entitásosztály paramétereinek száma (azaz egy $\varepsilon : e$ vektor mérete).
     \end{definition}
     
     Amennyiben valóban feltehetjük, hogy a paraméterek eloszlása azonos, minden két példány paraméterein ugyanazt a műveletet kell elvégeznünk, majd egyetlen összegző művelettel megállapíthatjuk, hogy az ezen paramétereket tartalmazó entitások távolsága mekkora. 
     
-    \begin{definition}
+    \begin{definition} (Távolság) \label{def:tavolsag}
         Két entitás távolsága az őket leíró vektorok euklideszi távolsága (lineáris eloszlású normáltak esetén \footnote{Szükség van linearitásra? Nem elég, ha mind ugyanolyan? Egyáltalán ez az engedmény valóban engedmény lenne (azon kívül, hogy általánosabb esetet fedne a definíció)?}).
         \begin{equation}
             d(x, y) = \sqrt{\sum_{i=1}^{|e|} (x_i - y_i)^2 } 
         \end{equation}
-        vagy
-        \begin{equation}
-            d(x, y) = \sqrt{(\vect{x}-\vect{y}) \times (\vect{x}-\vect{y})^T}
-        \end{equation}
-        ahol $x:e$ és $y:e$.
+        ahol $x \sim y$.
     \end{definition}
     
     Ezután állapítsuk meg, miért fontos ez számunkra. Igazságosnak akkor tekintünk egy beosztást, ha a beosztás elkészítése során nem torzítjuk azokat a távolságokat, melyek már a bemeneten is léteznek. Ezt felfoghatjuk úgy is, mint a Lipschitz-tulajdonság betartását (valamely $M$ konstansra):
     \begin{equation}
-        d(\subin{x}, \subin{y}) \leq Md(\subout{x}, \subout{y})
+        \forall x \sim y : \ d(\subin{x}, \subin{y}) \leq Md(\subout{x}, \subout{y})
     \end{equation}
     
+    Egy beosztástól azt szeretnénk, hogy a kimenetek távolságai arányosságban álljanak a bemeneti távolságokkal, tehát legyen igaz, hogy
+    \begin{equation}
+        d(\subout x, \subout y) \propto d(\subin x, \subin y).
+    \end{equation}
     
+    \begin{definition}[különbségváltozás, $\delta$]
+        Két egymással homogén entitás különbségváltozása megegyezik a bemeneti és kimeneti különbségük közti eltéréssel. Jele: $\delta$.
+        \begin{equation}
+            \delta(x, y) = d(\subout x, \subout y) - d(\subin x, \subin y)
+        \end{equation}
+    \end{definition}
+
+    Az eddigiekből következik, hogy a fairness-függvény értéke az egyes párok $\delta$-jából lesz számítva; ezt az átszámítást végezze esetünkben egy $u$ (unfairness) függvény, $f_e$ jelezze az $e$ entitásosztályon belüli igazságosságot:
+    \begin{equation}
+        f_e(S) \propto u_e\left(\ \bigcup_{x \sim y} \delta(x, y)\ \right)
+    \end{equation}
+    ahol $x:e$. Ezután a teljes fairségről megállapíthatjuk az egyszerű összefüggést:
+    \begin{equation}
+        f(S) \propto \sum_{e \in E_S} f_e(S)
+    \end{equation}
+    
+    Az eddig megállapítottakat kell a fairness-függvény megalkotásakor figyelembe vennünk; ez alól kivétel a $d$ pontos definíciója, hiszen az euklideszi távolság valódi távolságot mér két entitás között \footnote{Ha egy paraméter pl. $e^x$ jellegű értékeket vesz fel, azaz exponenciális eloszlású, akkor a paraméteren mért távolság torz; ezért figyelnünk kell a normáltakra, hogy lineárisak legyenek.}.
     
 
 \section{Súlyozás}
+    Felmerülhetnek az igazságossággal kapcsolatban további kérdések, melyek megválaszolásával optimálisabb vagy akár gyorsabban számítható eredményeket kaphatunk. Ilyen lehet például, hogy minden entitás közti igazságosság kell-e (pl. időszeletek egyformasága számít?), vagy vannak-e olyan paraméterek, amiket érzékenyebben kell kezelnünk, mint a többit (pl. a "rassz" vagy "párkapcsolati státusz" tulajdonság és a hitelbírálat sikeressége nem jó, ha korrelál, így ezt érzékenyebben vizsgálhatjuk $f$-hez).
+    
+    Paraméterek fontosságának kijelentéséhez definiáljuk a súlyokat.
+    
+    Innentől jelölje jobb felső indexben zárójelezett változó az entitás osztályát: $x^{(e)} \Leftrightarrow x:e$.
+    
+    \begin{definition}[Súly]
+        Egy osztály egy példányának $\ent{x}{e}_i$ paraméteréhez tartozó súly azt fejezi ki, mennyire befolyásolja a fairséget egy $y\sim x$ példány $\ent{y}{e}_i$ paraméterétől való erős eltérés a be- és kimenet között. 
+        
+        Ezen súly minden esetben 0 és 1 közötti értéket vesz fel.
+        \begin{equation}
+            \ent{\vect w}{e} \in [0;1]^{|e|}
+        \end{equation}
+    \end{definition}
+    
+    \begin{definition}[Súlyozott entitás]
+        Egy entitás súlyozása a paraméterenkénti szorzat számításából adódik:
+        \begin{equation}
+            \ent X e = \ent w e \ent x e
+        \end{equation}
+    \end{definition}
+    
+    \begin{megj}
+        Ha $\ent w e$ minden eleme $1$, akkor a súlyozás eredeti állapotot hagy, míg ha minden eleme $0$, akkor az összes létező beosztást "igazságosra" módosítja.
+    \end{megj}
+    
+    \begin{theorem}[Awareness - unawareness átjárhatóság]
+        Bináris súlyok használatával elérhető, hogy a "fairness through unawareness" definíciót felhasználjuk, annak ellenére, hogy a "fairness through awareness" szerint haladt az eddigi gondolatmenetünk. Ekkor az érdektelen változók súlyát 0-ra, a többi súlyt 1-re kell beállítanunk.
+    \end{theorem}
+    
+    
 
 \section{Súlyozási problémák}
+    ...
 
 \section{Igazságosság megállapításának folyamata}
+    ...
 
 \section{Algoritmusfüggetlenség}
+    ...
     
 \end{multicols}
     
