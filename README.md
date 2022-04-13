@@ -10,6 +10,7 @@ Az eddig felkerült fejezetek:
 - Paraméterek függése
 - Normalizációs problémák
 - Távolságok
+- Súlyozás
 
 ### Teendők, ha ezt olvasod
 
