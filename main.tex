@@ -11,6 +11,9 @@
 \usepackage[magyar]{babel}
 \usepackage{t1enc}
 
+\usepackage[autostyle]{csquotes}
+\selectlanguage{hungarian}
+
 \title{Beosztások igazságosságának vizsgálata}
 \author{Rónai-Kovács Martin}
 \date{2022}
@@ -29,6 +32,7 @@
 \newcommand{\norm}[1]{ \parallel {#1} \parallel }
 \newcommand{\pl}{ \textbf{Példa:} }
 \newcommand{\ent}[2]{ {#1}^{(#2)} }
+\newcommand{\info}[1]{ \text{inf}( #1 ) }
 
 \begin{document}
 
@@ -117,22 +121,22 @@
             $E_S$ és $C_S$ pontos formájával nem kell foglalkoznunk, mert nem használjuk őket (ezek a $\sigma$ függvény definiálásához kellenek); elég tudnunk, hogy $E_S$ az entitásosztályok egy {\it halmaza}.
         \end{megj}
         \begin{megj} \label{megj:param_func}
-            Az entitások itt nem nyers adatként jelennek meg. Úgy kell őket elképzelnünk, mint egy paraméterszámítási {\it függvény} eredményét ($p(r) = \varepsilon$), ami a nyers adatokból releványs információkat nyer ki számunkra. Erre azért van szükség, mert például záróvizsgabeosztásnál mindegy, mely hallgatókat vizsgáztatja egy konzulens, a kérdés az, hány hallgatót vizsgáztat egy konzulens.
+            Az entitások itt nem nyers adatként jelennek meg. Úgy kell őket elképzelnünk, mint egy paraméterszámítási {\it függvény} eredményét ($p(r) = \varepsilon$), ami a nyers adatokból releványs információkat nyer ki számunkra. Erre azért van szükség, mert például záróvizsgabeosztásnál mindegy, mely hallgatókat vizsgáztatja egy oktató, a kérdés az, hány hallgatót vizsgáztat egy oktató.
         \end{megj}
     \end{definition}
     
     \begin{definition}[Csoport]
         Azon entitások, melyek egy osztályba tartoznak, egy csoportot alkotnak. Egy $e \in E_S$ osztályhoz tartozó csoportot a következőképpen definiálunk:
         \begin{equation}
-            G(e) = \bigcup_{\varepsilon \ : \ e} \varepsilon
+            G(e) = \bigcup_{\varepsilon \ :: \ e} \varepsilon
         \end{equation}
-        Ahol az $\varepsilon \ : \ e$ jelentése, hogy $\varepsilon$ az $e$ osztályleírásnak megfelel. 
+        Ahol az $\varepsilon \ :: \ e$ jelentése, hogy $\varepsilon$ az $e$ osztályleírásnak megfelel. 
     \end{definition}
     
     \begin{definition}[Homogenitás]
         Két entitás homogén egymással, ha azonos osztályhoz tartoznak.
         \begin{equation}
-            \varepsilon_1 \sim \varepsilon_2 \Longleftrightarrow \varepsilon_1 : e \wedge \varepsilon_2 : e
+            \varepsilon_1 \sim \varepsilon_2 \Longleftrightarrow \varepsilon_1 :: e \wedge \varepsilon_2 :: e
         \end{equation}
     \end{definition}
     
@@ -276,7 +280,7 @@
         \begin{equation}
             d: \mathbb{R}^{2|e|} \to \mathbb{R}
         \end{equation}
-        ahol $|e|$ az $e$ entitásosztály paramétereinek száma (azaz egy $\varepsilon : e$ vektor mérete).
+        ahol $|e|$ az $e$ entitásosztály paramétereinek száma (azaz egy $\varepsilon :: e$ vektor mérete).
     \end{definition}
     
     Amennyiben valóban feltehetjük, hogy a paraméterek eloszlása azonos, minden két példány paraméterein ugyanazt a műveletet kell elvégeznünk, majd egyetlen összegző művelettel megállapíthatjuk, hogy az ezen paramétereket tartalmazó entitások távolsága mekkora. 
@@ -310,7 +314,7 @@
     \begin{equation}
         f_e(S) \propto u_e\left(\ \bigcup_{x \sim y} \delta(x, y)\ \right)
     \end{equation}
-    ahol $x:e$. Ezután a teljes fairségről megállapíthatjuk az egyszerű összefüggést:
+    ahol $x::e$. Ezután a teljes fairségről megállapíthatjuk az egyszerű összefüggést:
     \begin{equation}
         f(S) \propto \sum_{e \in E_S} f_e(S)
     \end{equation}
@@ -323,14 +327,14 @@
     
     Paraméterek fontosságának kijelentéséhez definiáljuk a súlyokat.
     
-    Innentől jelölje jobb felső indexben zárójelezett változó az entitás osztályát: $x^{(e)} \Leftrightarrow x:e$.
+    Innentől jelölje jobb felső indexben zárójelezett változó az entitás osztályát: $x^{(e)} \Leftrightarrow x::e$.
     
     \begin{definition}[Súly]
-        Egy osztály egy példányának $\ent{x}{e}_i$ paraméteréhez tartozó súly azt fejezi ki, mennyire befolyásolja a fairséget egy $y\sim x$ példány $\ent{y}{e}_i$ paraméterétől való erős eltérés a be- és kimenet között. 
+        Egy osztály egy példányának $\ent{x}{e}_i$ paraméteréhez tartozó súlya azt fejezi ki, mennyire befolyásolja a fairséget egy $y\sim x$ példány $\ent{y}{e}_i$ paraméterétől való erős eltérés. 
         
-        Ezen súly minden esetben 0 és 1 közötti értéket vesz fel.
+        Ezen súly minden esetben nem negatív értéket vesz fel.
         \begin{equation}
-            \ent{\vect w}{e} \in [0;1]^{|e|}
+            \ent{\vect w}{e} \in [0;\infty)^{|e|}
         \end{equation}
     \end{definition}
     
@@ -345,11 +349,66 @@
         Ha $\ent w e$ minden eleme $1$, akkor a súlyozás eredeti állapotot hagy, míg ha minden eleme $0$, akkor az összes létező beosztást "igazságosra" módosítja.
     \end{megj}
     
-    \begin{theorem}[Awareness - unawareness átjárhatóság]
-        Bináris súlyok használatával elérhető, hogy a "fairness through unawareness" definíciót felhasználjuk, annak ellenére, hogy a "fairness through awareness" szerint haladt az eddigi gondolatmenetünk. Ekkor az érdektelen változók súlyát 0-ra, a többi súlyt 1-re kell beállítanunk.
+    \begin{theorem}
+        Amennyiben $d$ az euklideszi távolság, azaz $$d(x,y) = |\vect x - \vect y|,$$ akkor a különbségenkénti súlyozás helyettesíthető entitássúlyozással.
+        \begin{proof}
+            Határozzuk meg $d_i(x, y)$-t:
+            \begin{equation}
+                d_i(x,y) = |\vect x_i - \vect y_i|,
+            \end{equation}
+            tehát
+            \begin{equation}
+                d(x,y) = \sqrt{ \sum_{i=1}^{|e|} d_i^2(x, y) }
+            \end{equation}
+            \begin{align}
+                w_i d_i(x, y) &= w_i |x_i - y_i| \\
+                &= |w_i x_i - w_i y_i| \\
+                &= d_i(wx, wy)
+            \end{align}
+            Azaz a $\ent w e$-vel súlyozott távolságokból számított $d$ értéke megegyezik a súlyozott entitások $d$ távolságával.
+        \end{proof}
     \end{theorem}
     
+    \begin{theorem}[Awareness - unawareness átjárhatóság]
+        Bináris súlyok használatával elérhető, hogy a \textit{fairness through unawareness} (FTU) definíciót felhasználjuk, annak ellenére, hogy a \textit{fairness through awareness} (FTA) szerint haladt az eddigi gondolatmenetünk. 
+        
+        Ekkor az érdektelen változók súlyát 0-ra, a többi súlyt 1-re kell beállítanunk, így kapva egy $f_1$ fairness értéket; majd minden súlyt 1-re állítva kapunk egy $f_2$ értéket. Ezek különbsége mondja meg, hogy az FTU definíció szerint igazságos-e az adott beosztás:
+        $$ |f_1 - f_2| < h_{FTU} \Leftrightarrow S \text{ igazságos}, $$
+        ahol $h_{FTU}$ egy hibahatár.
+    \end{theorem}
     
+    Alapvetően a súlyozás optimalizásra használható, azonban lehetőséget ad arra is, hogy bizonyos információkat \enquote{enyhítsünk}, ha azok esetleg redundánsak lennének. Eddig ezt azzal a feltevéssel hidaltuk át, hogy az entitásainkat és azok paramétereit is páronként függetlennek tekinthettük, de így korlátoztuk $I_S$ formátumát, ezzel szűkítve a lehetséges $\sigma$ függvények, illetve a lehetséges $D_S$ leírások halmazát.
+    
+    Ennek áthidalása tehát kényelmes lenne, ezért vizsgáljuk meg, hogyan segíthetnek a súlyozások.
+
+    Paraméterek esetén, ha több is ugyanazt az információt hordozza magában, tehát valamely $e$-re $$\forall x: \ \ent x e _i \propto \ent x e _j,$$ vagy máshogyan kifejezve $e_i \propto e_j$, akkor (hiába lehetséges, hogy eltérően definiálja $p$ ezen értékeket) az információt redukálnunk kell 1 paraméterbe.
+
+    \begin{theorem}
+        Súlyokkal elérhető, hogy a redundáns paraméterek információja ne legyen túlreprezentálva.
+        
+        \begin{proof}
+            T.f.h. valamely $R \subset \ent x e$ egy olyan paraméterhalmaz, melynek minden eleme ugyanazt az információt hordozza, azaz teljesen redundáns paraméterek. (Ez nem azonos azzal, hogy két paraméter \textit{értéke} megegyezik!)
+            
+            Ekkor normálás után $\forall i: R_i$ értékkészlete azonos ($[0;1]$), tehát súlyuk a távolságszámításban azonos (leszámítva a $\ent w e$ együtthatókat). 
+            
+            Amit el szeretnénk érni, hogy az $R$-beli értékek összesen akkora súlyúak legyenek, mint egyetlen paraméter. Ezt (az azonos értékkészlet miatt) megtehetjük úgy, hogy $\frac{1}{|R|}$ együtthatót adunk nekik.
+            
+            Alapvetően ezt akkor tehetjük meg, ha teljes a redundancia; de ezt feltételezhetjük, mivel minden egyes paraméter (a problémánk szempontjából) elemi információ (tehát nincs részleges függés).
+        \end{proof}
+    \end{theorem}
+    
+    \begin{definition}[Paraméter redundanciaegyütthatója]
+        Amennyiben két (vagy több) paraméter egy $\ent x e$ entitásban redundáns, redundanciaegyütthatójuk egy olyan érték, mellyel elérjük, hogy összesen akkora súlyúak legyenek, mint egyetlen független paraméter.
+        
+        $R(\ent x e _i)$ azon paraméterek halmaza, melyek redundánsak $\ent x e _i$-vel.
+        \begin{equation}
+            \forall \ent x e _i \propto \ent x e _j : \ent x e _j \in R(\ent x e _i) 
+        \end{equation}
+        Ezt használva könnyen definiálható a redundanciaegyüttható:
+        \begin{equation}
+            \ent r e _i = \frac{1}{|R(\ent x e _i)|}
+        \end{equation}
+    \end{definition}
 
 \section{Súlyozási problémák}
     ...
