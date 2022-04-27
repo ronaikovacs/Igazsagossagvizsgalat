@@ -14,6 +14,9 @@
 \usepackage[autostyle]{csquotes}
 \selectlanguage{hungarian}
 
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
 \title{Beosztások igazságosságának vizsgálata}
 \author{Rónai-Kovács Martin}
 \date{2022}
@@ -21,6 +24,7 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Definíció}[section]
 \newtheorem{theorem}{Tétel}[section]
+\newtheorem{allitas}{Állítás}[section]
 \newtheorem*{kov}{Következmény}
 \newtheorem*{megj}{Megjegyzés}
 \newtheorem{lemma}[theorem]{Lemma}
@@ -85,7 +89,7 @@
         \end{equation}
     \end{theorem}
     
-    Ennek jelentősége, hogy a beosztásokban az igazságosságot a kimenetek is szabják; ha egy kimenet eleve nem lehet elég megfelelő (mert olyan "szerencsétlen" bemenethez tartozik), akkor a hozzá tartozó igazságossági mérték sem az adott beosztásról ad nekünk információt: előfordulhat, hogy egy megadott bemenethez a lehető legoptimálisabb beosztás igazságossága is rosszabb, mint egy másik bemenethez tartozó legrosszabb beosztásé.
+    Ennek jelentősége, hogy a beosztásokban az igazságosságot a kimenetek is szabják; ha egy kimenet eleve nem lehet elég megfelelő (mert olyan \enquote{szerencsétlen} bemenethez tartozik), akkor a hozzá tartozó igazságossági mérték sem az adott beosztásról ad nekünk információt: előfordulhat, hogy egy megadott bemenethez a lehető legoptimálisabb beosztás igazságossága is rosszabb, mint egy másik bemenethez tartozó legrosszabb beosztásé.
     
     \begin{definition}[Izomorfia]
         Két beosztás pontosan akkor izomorf, ha azonos bemenetük van.
@@ -259,7 +263,7 @@
     
     A másik aggály, ami felmerülhet, hogy (véges pontosságú eszközök miatt) egyes adatok irrelevánssá válhatnak a normalizáció során. Például lehetnek olyan paraméterek, melyeket nem lineárisan, hanem logaritmikusan kell normálni, mivel maguk a paraméterek exponenciálisak. Ez a probléma elkerülhető, ha a normalizációs ($\nu_i$) függvényeket minden paraméterre körültekintően választjuk meg. Ez talán még automatizálható is regressziókkal.
     
-    Ha a normalizáció során elérjük, hogy a skálán elhelyezkedő értékek ugyanolyan eloszlásúak legyenek (lehetőleg lineárisak), akkor tetszőleges paraméter {\it tekinthető} lineárisnak. Ennek jelentősége a továbbiakban jelentős, hiszen ezzel elérjük, hogy két entitás távolságának számításakor a paraméterek homogének legyenek eloszlás szempontjából (tehát ne kelljen minden paraméterre meghatározni egy "távolságbefolyásolási tényezőt", vagy hasonlót).
+    Ha a normalizáció során elérjük, hogy a skálán elhelyezkedő értékek ugyanolyan eloszlásúak legyenek (lehetőleg lineárisak), akkor tetszőleges paraméter {\it tekinthető} lineárisnak. Ennek jelentősége a továbbiakban jelentős, hiszen ezzel elérjük, hogy két entitás távolságának számításakor a paraméterek homogének legyenek eloszlás szempontjából (tehát ne kelljen minden paraméterre meghatározni egy \enquote{távolságbefolyásolási tényezőt}, vagy hasonlót).
     
 \section{Távolságok}    
     
@@ -306,7 +310,7 @@
     \begin{definition}[különbségváltozás, $\delta$]
         Két egymással homogén entitás különbségváltozása megegyezik a bemeneti és kimeneti különbségük közti eltéréssel. Jele: $\delta$.
         \begin{equation}
-            \delta(x, y) = d(\subout x, \subout y) - d(\subin x, \subin y)
+            \delta(x, y) = |d(\subout x, \subout y) - d(\subin x, \subin y)|
         \end{equation}
     \end{definition}
 
@@ -323,14 +327,14 @@
     
 
 \section{Súlyozás}
-    Felmerülhetnek az igazságossággal kapcsolatban további kérdések, melyek megválaszolásával optimálisabb vagy akár gyorsabban számítható eredményeket kaphatunk. Ilyen lehet például, hogy minden entitás közti igazságosság kell-e (pl. időszeletek egyformasága számít?), vagy vannak-e olyan paraméterek, amiket érzékenyebben kell kezelnünk, mint a többit (pl. a "rassz" vagy "párkapcsolati státusz" tulajdonság és a hitelbírálat sikeressége nem jó, ha korrelál, így ezt érzékenyebben vizsgálhatjuk $f$-hez).
+    Felmerülhetnek az igazságossággal kapcsolatban további kérdések, melyek megválaszolásával optimálisabb vagy akár gyorsabban számítható eredményeket kaphatunk. Ilyen lehet például, hogy minden entitás közti igazságosság kell-e (pl. időszeletek egyformasága számít?), vagy vannak-e olyan paraméterek, amiket érzékenyebben kell kezelnünk, mint a többit (pl. a \enquote{rassz} vagy \enquote{párkapcsolati státusz} tulajdonság és a hitelbírálat sikeressége nem jó, ha korrelál, így ezt érzékenyebben vizsgálhatjuk $f$-hez).
     
     Paraméterek fontosságának kijelentéséhez definiáljuk a súlyokat.
     
     Innentől jelölje jobb felső indexben zárójelezett változó az entitás osztályát: $x^{(e)} \Leftrightarrow x::e$.
     
     \begin{definition}[Súly]
-        Egy osztály egy példányának $\ent{x}{e}_i$ paraméteréhez tartozó súlya azt fejezi ki, mennyire befolyásolja a fairséget egy $y\sim x$ példány $\ent{y}{e}_i$ paraméterétől való erős eltérés. 
+        Egy osztály egy példányának $\ent{x}{e}_i$ paraméteréhez tartozó súlya azt fejezi ki, mennyire befolyásolja a fairséget egy $y\sim x$ példány $\ent{y}{e}_i$ paraméterétől való eltérés. 
         
         Ezen súly minden esetben nem negatív értéket vesz fel.
         \begin{equation}
@@ -345,12 +349,29 @@
         \end{equation}
     \end{definition}
     
+    \begin{definition}[Súlyozott (rész)távolság]
+        A súlyozott távolság megegyezik a paraméterenkénti távolságok súlyokkal vett szorzatából számított távolságokkal. Az $i.$ résztávolság jele $d_i$:
+        \begin{equation}
+            d_i(x, y) = d(x_i, y_i),
+        \end{equation}
+        a súlyozott résztávolságok ekkor:
+        \begin{equation}
+            D_{i}(x, y) = w_id_i(x, y)
+        \end{equation}
+        \begin{megj}
+            Mi esetünkben $d(x, y) = |x-y|$, tehát
+            \begin{equation}\label{eq:sulyozott_euklideszi}
+                D(x, y) = \sqrt{\sum_{i=1}^{|e|} D_i^2(x, y)} 
+            \end{equation}
+        \end{megj}
+    \end{definition}
+    
     \begin{megj}
-        Ha $\ent w e$ minden eleme $1$, akkor a súlyozás eredeti állapotot hagy, míg ha minden eleme $0$, akkor az összes létező beosztást "igazságosra" módosítja.
+        Ha $\ent w e$ minden eleme $1$, akkor a súlyozás eredeti állapotot hagy, míg ha minden eleme $0$, akkor az összes létező beosztást \enquote{igazságosra} módosítja.
     \end{megj}
     
-    \begin{theorem}
-        Amennyiben $d$ az euklideszi távolság, azaz $$d(x,y) = |\vect x - \vect y|,$$ akkor a különbségenkénti súlyozás helyettesíthető entitássúlyozással.
+    \begin{allitas}
+        Amennyiben $d$ az euklideszi távolság, azaz $d(x,y) = |\vect x - \vect y|,$ akkor a különbségenkénti súlyozás helyettesíthető entitássúlyozással.
         \begin{proof}
             Határozzuk meg $d_i(x, y)$-t:
             \begin{equation}
@@ -358,16 +379,19 @@
             \end{equation}
             tehát
             \begin{equation}
-                d(x,y) = \sqrt{ \sum_{i=1}^{|e|} d_i^2(x, y) }
-            \end{equation}
-            \begin{align}
-                w_i d_i(x, y) &= w_i |x_i - y_i| \\
+            \begin{split}
+                D_i(x, y) &= w_i d_i(x, y) \\
+                &= w_i |x_i - y_i| \\
                 &= |w_i x_i - w_i y_i| \\
                 &= d_i(wx, wy)
-            \end{align}
-            Azaz a $\ent w e$-vel súlyozott távolságokból számított $d$ értéke megegyezik a súlyozott entitások $d$ távolságával.
+            \end{split}
+            \end{equation}
+            (\ref{eq:sulyozott_euklideszi}) ismeretében belátható, hogy euklideszi távolságok esetén a súlyozott résztávoságokból számított $d$ valóban megegyezik a súlyozott entitásokból számított $d$ értékével.
         \end{proof}
-    \end{theorem}
+        \begin{megj}
+            Ennek hasznossága leginkább, hogy $D(x, y)$ számításakor nem kell elvégeznünk a $w_i$-vel való szorzásokat minden $(x,y)$ párra, elég a számítás előtt minden $\varepsilon$ entitást felskálázni $w$-vel.
+        \end{megj}
+    \end{allitas}
     
     \begin{theorem}[Awareness - unawareness átjárhatóság]
         Bináris súlyok használatával elérhető, hogy a \textit{fairness through unawareness} (FTU) definíciót felhasználjuk, annak ellenére, hogy a \textit{fairness through awareness} (FTA) szerint haladt az eddigi gondolatmenetünk. 
@@ -381,7 +405,7 @@
     
     Ennek áthidalása tehát kényelmes lenne, ezért vizsgáljuk meg, hogyan segíthetnek a súlyozások.
 
-    Paraméterek esetén, ha több is ugyanazt az információt hordozza magában, tehát valamely $e$-re $$\forall x: \ \ent x e _i \propto \ent x e _j,$$ vagy máshogyan kifejezve $e_i \propto e_j$, akkor (hiába lehetséges, hogy eltérően definiálja $p$ ezen értékeket) az információt redukálnunk kell 1 paraméterbe.
+    Paraméterek esetén, ha több is ugyanazt az információt hordozza magában, tehát valamely $e$-re $$\forall x::e : \ \ent x e _i \propto \ent x e _j,$$ vagy máshogyan kifejezve $e_i \propto e_j$, akkor (hiába lehetséges, hogy eltérően definiálja $p$ ezen értékeket) az információt redukálnunk kell 1 paraméterbe.
 
     \begin{theorem}
         Súlyokkal elérhető, hogy a redundáns paraméterek információja ne legyen túlreprezentálva.
@@ -389,7 +413,7 @@
         \begin{proof}
             T.f.h. valamely $R \subset \ent x e$ egy olyan paraméterhalmaz, melynek minden eleme ugyanazt az információt hordozza, azaz teljesen redundáns paraméterek. (Ez nem azonos azzal, hogy két paraméter \textit{értéke} megegyezik!)
             
-            Ekkor normálás után $\forall i: R_i$ értékkészlete azonos ($[0;1]$), tehát súlyuk a távolságszámításban azonos (leszámítva a $\ent w e$ együtthatókat). 
+            Ekkor normálás után $\forall i: R_i \in [0;1]$, tehát súlyuk a távolságszámításban azonos (figyelembe nem véve a $\ent w e$ együtthatókat). 
             
             Amit el szeretnénk érni, hogy az $R$-beli értékek összesen akkora súlyúak legyenek, mint egyetlen paraméter. Ezt (az azonos értékkészlet miatt) megtehetjük úgy, hogy $\frac{1}{|R|}$ együtthatót adunk nekik.
             
@@ -397,8 +421,8 @@
         \end{proof}
     \end{theorem}
     
-    \begin{definition}[Paraméter redundanciaegyütthatója]
-        Amennyiben két (vagy több) paraméter egy $\ent x e$ entitásban redundáns, redundanciaegyütthatójuk egy olyan érték, mellyel elérjük, hogy összesen akkora súlyúak legyenek, mint egyetlen független paraméter.
+    \begin{definition}[Redundanciaegyüttható]
+        Amennyiben két (vagy több) paraméter egy $e$ osztályban redundáns, redundanciaegyütthatójuk egy olyan érték, mellyel elérjük, hogy összesen akkora értékűek legyenek, mint egyetlen független paraméter.
         
         $R(\ent x e _i)$ azon paraméterek halmaza, melyek redundánsak $\ent x e _i$-vel.
         \begin{equation}
@@ -409,12 +433,67 @@
             \ent r e _i = \frac{1}{|R(\ent x e _i)|}
         \end{equation}
     \end{definition}
+    
+    \begin{definition}[összesített együttható, korrigált távolság]
+        Egy $e_i$ paraméter összesített együtthatója $\ent c e _i$ megegyezik $e_i$ összes együtthatójának szorzatával. Mi esetünkben ez:
+        \begin{equation}
+            \ent c e _i = \ent r e _i \ent w e _i
+        \end{equation}
+        Ezzel újradefiniálható a korrigált (rész)távolság is:
+        \begin{equation}
+            D_i(x, y) = c_i d_i(x, y)
+        \end{equation}
+    \end{definition}
 
 \section{Súlyozási problémák}
-    ...
+    Láttuk, hogyan alkalmazható a súlyozás a fairség hatékonyabb megállapításához, de természetesnek vettük, hogy a súlyok előre meg vannak állapítva. Azonban a kijelölt célok közül az elsőt (eddigi tudásunk szerint) megszegi minden olyan eset, ahol létezik $\ent w e _i \neq 1$, mivel ez esetben kézzel kell beállítani $w$ értékét (hiszen ez a paraméter \enquote{fontosságát} fejezi ki, tehát problémától és szemantikától nem független).
+    
+    Megoldás lehet, ha találunk algoritmust ezen súlyok automatikus megállapítására, de ekkor elveszhet $w$ eredeti célja. Itt inkább köztes megoldásra lesz szükség.\footnote{Köztes megoldás lehet, ha véletlenszerűen inicializált értékekkel töltjük fel a vektorokat, kiszámoljuk az így kapott $f$-et, optimalizáljuk az értékeket egy $\pm \gamma$-val való növeléssel, és ezt addig ismételjük, míg $f$ értéke maximális lesz. A folyamat leállásakor megtekintjük a kiszámolt $w$ értékeit, és megállapítjuk, reálisak-e.}
+    
+    $\ent r e$ meghatározása is hasonló problémákat vet fel, azonban a redundancia megállapítására léteznek módszerek, ez nem (feltétlenül) igényel emberi beavatkozást.
+    
+    További probléma a redundanciaegyütthatókkal, hogy a fentebb leírtak szerint csak akkor használhatóak, ha a paraméterek elemi információt hordoznak; ami egy újabb követelményünk $p$ megalkotásához.
+    
+    Végül feltehetjük a kérdést, hogy ha részben meg szerettük volna oldani a függetlenség kérdését, akkor miért nem oldottuk meg teljesen? Jelenleg nincs módszerünk arra, hogy a nem elemi információk közti redundanciát kezeljük. Entitások között fennállhat együttmozgás, ha a reprezentációs modell úgy határozza meg a problémát.
+    
+    \pl Zárovizsgabeosztás esetén szerepelhet a modellben \textit{Vizsgáztató}, de nem szerepelhet \textit{Elnök} és \textit{Belső tag}, mert megeshet, hogy ezeket a szerepeket ugyanaz az ember tölti be, így (az utóbbi modellben) effektíve kétszer reprezentálunk egy példányt.
 
 \section{Igazságosság megállapításának folyamata}
     ...
+    
+    \begin{tikzpicture}[
+        inoutput/.style={circle, draw=black, very thick, minimum size=8mm},
+        red/.style={rectangle, draw=red!60, fill=red!5, very thick, minimum size=7mm},
+        blue/.style={rectangle, draw=blue!60, fill=blue!5, very thick, minimum size=7mm},
+        node distance= 3mm and 9mm
+        ]
+        
+        \node[red]      (sigma)                                 {$\sigma$};
+        \node[inoutput] (IS)                [above=of sigma]    {$I_S$};
+        \node[inoutput] (OS)                [below=of sigma]    {$O_S$};
+        
+        \node[blue]      (normIn)           [right=of IS]       {$\nu$};
+        \node[blue]      (normOut)          [right=of OS]       {$\nu$};
+                
+        \node[blue]      (dIn)              [right=of normIn]   {$D$};
+        \node[blue]      (dOut)             [right=of normOut]  {$D$};
+        
+        \node[blue]      (delta)            [below right=of dIn]{$\delta$};
+        
+        \node[inoutput]  (fairness)         [right=of delta]    {$f$};
+        
+        %Lines
+        \draw[->] (IS) -- (sigma);
+        \draw[->] (sigma) -- (OS);
+        \draw[->] (IS) -- (normIn);
+        \draw[->] (OS) -- (normOut);
+        \draw[->] (normIn) -- (dIn);
+        \draw[->] (normOut) -- (dOut);
+        \draw[->] (dIn) -- (delta);
+        \draw[->] (dOut) -- (delta);
+        \draw[->] (delta) -- (fairness) node[pos=0.5,fill=white] {$\propto$};
+            
+    \end{tikzpicture}
 
 \section{Algoritmusfüggetlenség}
     ...
