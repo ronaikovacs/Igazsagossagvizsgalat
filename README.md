@@ -9,8 +9,12 @@ Az eddig felkerült fejezetek:
 - Általánosítás
 - Paraméterek függése
 - Normalizációs problémák
-- Távolságok
-- Súlyozás
+- Távolságok 
+    *(Bővítése következik)*
+- Súlyozás 
+    *(További lehetőségekért lásd Súlyozási problémák)*
+- Súlyozási problémák
+- Igazságosság megállapításának folyamata
 
 ### Teendők, ha ezt olvasod
 
