@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass[twocolumn]{article}
 \usepackage[margin=2.5cm]{geometry}
 
 \usepackage{amsmath}
@@ -13,9 +13,12 @@
 
 \usepackage[autostyle]{csquotes}
 \selectlanguage{hungarian}
+\usepackage{blindtext}
 
 \usepackage{tikz}
 \usetikzlibrary{positioning}
+
+\usepackage{hyperref}
 
 \title{Beosztások igazságosságának vizsgálata}
 \author{Rónai-Kovács Martin}
@@ -42,12 +45,9 @@
 
 \maketitle
 
-\begin{multicols}{2}
-
-
-    \begin{abstract}
-        Ebben az összefoglalóban a beosztásokra vonatkozó igazságosság fogalmát próbáljuk megfogalmazni, mint általános mérték. Az ezzel kapcsolatos legnagyobb probléma, hogy a legtöbb beosztás esetén egyéni algoritmusok készítenek beosztásokat, egyéni be- és kimenetekre. Megállapítunk általánosítási eljárásokat és fogalmakat, és ezeket használva definiáljuk a hasonlóságot bemenetek között és az igazságosságot, mint az ettől való eltérés mértékét. \footnote{Ezt előre fogalmaztam meg, nem ez lesz ideírva}
-    \end{abstract}
+\begin{abstract}
+    Ebben az összefoglalóban a beosztásokra vonatkozó igazságosság fogalmát próbáljuk megfogalmazni, mint általános mérték. Az ezzel kapcsolatos legnagyobb probléma, hogy a legtöbb beosztás esetén egyéni algoritmusok készítenek beosztásokat, egyéni be- és kimenetekre. Megállapítunk általánosítási eljárásokat és fogalmakat, és ezeket használva definiáljuk a hasonlóságot bemenetek között és az igazságosságot, mint az ettől való eltérés mértékét. \footnote{Ezt előre fogalmaztam meg, nem ez lesz ideírva}
+\end{abstract}
 
 \section{Bevezetés}
     A beosztási problémák megoldása, lévén egy NP-teljes probléma, nagy körültekintést, hatékonyságot, és igen gyakran problémára specifikált megoldási módszert igényel. Emiatt kényszerűen el kell fogadnunk egy-egy elkészült beosztásról, hogy annál jobbat nem fogunk találni, megfelel a pszeudo-tökéletes eredmény is. 
@@ -73,7 +73,7 @@
     \begin{definition}[Beosztás]
         A beosztás egy tetszőleges beosztási probléma egy bemenete és az arra (egy tetszőleges beosztáskészítő által) adott kimenet.
         \begin{equation} S = \set{I_S, O_S},\end{equation} 
-        \\ ahol $I_S$ az $S$ beosztás bemenete, míg $O_S$ az $S$ beosztás kimenete.
+        ahol $I_S$ az $S$ beosztás bemenete, míg $O_S$ az $S$ beosztás kimenete.
 
     \end{definition}
     
@@ -115,7 +115,7 @@
     
     Először határozzuk meg a beosztási problémát. Minden problémában entitások (beosztandók) és követelmények szerepelnek. Így adódik a következő egyszerű leírás:
     
-    \begin{definition}[Beosztási probléma]\label{def:problema}
+    \begin{definition}[Beosztási probléma] \label{def:problema}
         Egy beosztási probléma definíciója a példányok leírásainak halmaza és a követelmények halmaza:
         \begin{equation}
             D_S = \set{E_S, C_S},
@@ -171,14 +171,14 @@
     
     Tehát meghatároztuk a beosztási problémánk bemenetének leírását. Tételezzük fel, hogy a kimenetet hasonlóan írhatjuk le, tehát a fenti definíciókban $I_S$ felcserélhető $O_S$-sel, amennyiben az $\subin{e}$-t is felcseréljük $\subout{e}$-tal, stb.
     
-    \begin{theorem}[Normalizáció I.]\label{thm:norm1}
+    \begin{theorem}[Normalizáció I.] \label{thm:norm1}
         Minden bemenetnek létezik normáltja, vagyis
         \begin{equation}
             \forall I_{S,e} : \exists \norm{I_{S,e}} 
         \end{equation}
         \begin{proof}
         Használjuk az alábbi lemmát:
-            \begin{lemma}[Entitás-vektor azonosság]\label{lem:vektor}
+            \begin{lemma}[Entitás-vektor azonosság] \label{lem:vektor}
                 Minden entitás leírható valós vektorként, azaz 
                 $\varepsilon = \vect{\varepsilon} \in \mathbb{R}^n$, 
                 ahol $n$ az $\varepsilon$ entitás paramétereinek száma (ideértve a számított paramétereket is).
@@ -323,7 +323,7 @@
         f(S) \propto \sum_{e \in E_S} f_e(S)
     \end{equation}
     
-    Az eddig megállapítottakat kell a fairness-függvény megalkotásakor figyelembe vennünk; ez alól kivétel a $d$ pontos definíciója, hiszen az euklideszi távolság valódi távolságot mér két entitás között \footnote{Ha egy paraméter pl. $e^x$ jellegű értékeket vesz fel, azaz exponenciális eloszlású, akkor a paraméteren mért távolság torz; ezért figyelnünk kell a normáltakra, hogy lineárisak legyenek.}.
+    Az eddig megállapítottakat kell a fairness-függvény megalkotásakor figyelembe vennünk; ez alól kivétel a $d$ pontos definíciója, hiszen az euklideszi távolság valódi távolságot mér két entitás között\footnote{Ha egy paraméter pl. $e^x$ jellegű értékeket vesz fel, azaz exponenciális eloszlású, akkor a paraméteren mért távolság torz; ezért figyelnünk kell a normáltakra, hogy lineárisak legyenek.}.
     
 
 \section{Súlyozás}
@@ -459,45 +459,51 @@
     \pl Zárovizsgabeosztás esetén szerepelhet a modellben \textit{Vizsgáztató}, de nem szerepelhet \textit{Elnök} és \textit{Belső tag}, mert megeshet, hogy ezeket a szerepeket ugyanaz az ember tölti be, így (az utóbbi modellben) effektíve kétszer reprezentálunk egy példányt.
 
 \section{Igazságosság megállapításának folyamata}
-    ...
+    Az eddig kijelentett fogalmak alapján megalkothatunk egy eljárást, hogy végre megállapítsuk $f$ értékét tetszőleges beosztásra. Egy absztrakt verziót láthatunk \az{\ref{fig:flow}}. ábrán.
     
-    \begin{tikzpicture}[
-        inoutput/.style={circle, draw=black, very thick, minimum size=8mm},
-        red/.style={rectangle, draw=red!60, fill=red!5, very thick, minimum size=7mm},
-        blue/.style={rectangle, draw=blue!60, fill=blue!5, very thick, minimum size=7mm},
-        node distance= 3mm and 9mm
-        ]
-        
-        \node[red]      (sigma)                                 {$\sigma$};
-        \node[inoutput] (IS)                [above=of sigma]    {$I_S$};
-        \node[inoutput] (OS)                [below=of sigma]    {$O_S$};
-        
-        \node[blue]      (normIn)           [right=of IS]       {$\nu$};
-        \node[blue]      (normOut)          [right=of OS]       {$\nu$};
+    \begin{figure}[ht]
+        \begin{center}
+            \begin{tikzpicture}[
+                inoutput/.style={circle, draw=black, very thick, minimum size=8mm},
+                red/.style={rectangle, draw=red!60, fill=red!5, very thick, minimum size=7mm},
+                blue/.style={rectangle, draw=blue!60, fill=blue!5, very thick, minimum size=7mm},
+                node distance= 3mm and 9mm
+                ]
                 
-        \node[blue]      (dIn)              [right=of normIn]   {$D$};
-        \node[blue]      (dOut)             [right=of normOut]  {$D$};
-        
-        \node[blue]      (delta)            [below right=of dIn]{$\delta$};
-        
-        \node[inoutput]  (fairness)         [right=of delta]    {$f$};
-        
-        %Lines
-        \draw[->] (IS) -- (sigma);
-        \draw[->] (sigma) -- (OS);
-        \draw[->] (IS) -- (normIn);
-        \draw[->] (OS) -- (normOut);
-        \draw[->] (normIn) -- (dIn);
-        \draw[->] (normOut) -- (dOut);
-        \draw[->] (dIn) -- (delta);
-        \draw[->] (dOut) -- (delta);
-        \draw[->] (delta) -- (fairness) node[pos=0.5,fill=white] {$\propto$};
-            
-    \end{tikzpicture}
+                \node[red]      (sigma)                                 {$\sigma$};
+                \node[inoutput] (IS)                [above=of sigma]    {$I_S$};
+                \node[inoutput] (OS)                [below=of sigma]    {$O_S$};
+                
+                \node[blue]      (normIn)           [right=of IS]       {$\nu$};
+                \node[blue]      (normOut)          [right=of OS]       {$\nu$};
+                        
+                \node[blue]      (dIn)              [right=of normIn]   {$d$};
+                \node[blue]      (dOut)             [right=of normOut]  {$d$};
+                
+                \node[blue]      (delta)            [below right=of dIn]{$\delta$};
+                
+                \node[inoutput]  (fairness)         [right=of delta]    {$f$};
+                
+                %Lines
+                \draw[->] (IS) -- (sigma);
+                \draw[->] (sigma) -- (OS);
+                \draw[->] (IS) -- (normIn) node[pos=0.5,fill=white] {$p$};
+                \draw[->] (OS) -- (normOut) node[pos=0.5,fill=white] {$p$};
+                \draw[->] (normIn) -- (dIn);
+                \draw[->] (normOut) -- (dOut);
+                \draw[->] (dIn) -- (delta);
+                \draw[->] (dOut) -- (delta);
+                \draw[->] (delta) -- (fairness) node[pos=0.5,fill=white] {$\propto$};
+                    
+            \end{tikzpicture}
+            \caption{A fairség ($f$) súlymentes megállapításának sematikus folyamata}
+            \label{fig:flow}
+        \end{center}
+    \end{figure}
+    \blindtext[2] 
 
 \section{Algoritmusfüggetlenség}
-    ...
+    \blindtext[2]
     
-\end{multicols}
     
 \end{document}
