@@ -20,7 +20,7 @@
 
 \usepackage{hyperref}
 
-\title{Beosztások igazságosságának vizsgálata}
+\title{Általános ember- és problémafüggetlen igazságossági mértéket megállapító algoritmus beosztásokra}
 \author{Rónai-Kovács Martin}
 \date{2022}
 
@@ -46,7 +46,7 @@
 \maketitle
 
 \begin{abstract}
-    Ebben az összefoglalóban a beosztásokra vonatkozó igazságosság fogalmát próbáljuk megfogalmazni, mint általános mérték. Az ezzel kapcsolatos legnagyobb probléma, hogy a legtöbb beosztás esetén egyéni algoritmusok készítenek beosztásokat, egyéni be- és kimenetekre. Megállapítunk általánosítási eljárásokat és fogalmakat, és ezeket használva definiáljuk a hasonlóságot bemenetek között és az igazságosságot, mint az ettől való eltérés mértékét. \footnote{Ezt előre fogalmaztam meg, nem ez lesz ideírva}
+    Az alábbiakban egy általános ember- és problémafüggetlen igazságosságmegállapítási algoritmust határozunk meg. Az ezzel kapcsolatos legnagyobb probléma, hogy a legtöbb beosztás esetén egyéni algoritmusok készítenek beosztásokat, egyéni be- és kimenetekre. Megállapítunk általánosítási eljárásokat és fogalmakat, és ezeket használva definiáljuk a hasonlóságot bemenetek között és az igazságosságot, mint ezen hasonlóság megtartását egy beosztás elkészítése során. 
 \end{abstract}
 
 \section{Bevezetés}
@@ -66,7 +66,7 @@
         \item A módszer eredménye (kimenete) legyen számszerű; hiszen így állapítható meg, hogy egyes beosztások igazságosabbak, mint mások.
     \end{enumerate}
     
-    Amit mi keresünk, az egy $f( \set{ I_S, O_S }) = \varphi \in \mathbb{R}$ függvény, ahol $\set{I_S, O_S}$ egy tetszőleges beosztási probléma be- és kimenete. Ezen $f$ megalkotásakor kell a fenti szempontokat megvalósítanunk.
+    Amit mi keresünk, az egy $f( \set{ I_S, O_S }) \in \mathbb{R}$ függvény, ahol $\set{I_S, O_S}$ egy tetszőleges beosztási probléma be- és kimenete. Ezen $f$ megalkotásakor kell a fenti szempontokat megvalósítanunk.
 
 \section{Beosztások közti reláció}
     
@@ -125,7 +125,7 @@
             $E_S$ és $C_S$ pontos formájával nem kell foglalkoznunk, mert nem használjuk őket (ezek a $\sigma$ függvény definiálásához kellenek); elég tudnunk, hogy $E_S$ az entitásosztályok egy {\it halmaza}.
         \end{megj}
         \begin{megj} \label{megj:param_func}
-            Az entitások itt nem nyers adatként jelennek meg. Úgy kell őket elképzelnünk, mint egy paraméterszámítási {\it függvény} eredményét ($p(r) = \varepsilon$), ami a nyers adatokból releványs információkat nyer ki számunkra. Erre azért van szükség, mert például záróvizsgabeosztásnál mindegy, mely hallgatókat vizsgáztatja egy oktató, a kérdés az, hány hallgatót vizsgáztat egy oktató.
+            Az entitások itt nem nyers adatként jelennek meg. Úgy kell őket elképzelnünk, mint egy paraméterszámítási {\it függvény} eredményét ($p(r) = \varepsilon$), ami a nyers adatokból releványs információkat nyer ki számunkra. Erre olyan esetek miatt van szükség, mint például záróvizsgabeosztásnál, ahol mindegy, mely hallgatókat vizsgáztatja egy oktató, a kérdés az, hány hallgatót vizsgáztat egy oktató.
         \end{megj}
     \end{definition}
     
@@ -270,7 +270,8 @@
     A távolságok nagy szerepet játszanak az igazságosság megállapításában, hiszen a beosztás előtti és utáni távolságok közti eltérésből deríthetjük ki a legszembetűnőbb anomáliákat (ha csak 1GHz-es CPU-ink vannak, rendben van, hogy mind ugyanannyi feladatot kap; de ha van mellette egy 10GHz-es is, akkor az egyenlő szétosztás nem igazságos).
     
     Mivel a bemeneteken azok a paraméterek, melyeket csak a beosztás befolyásol nem lesznek egymástól távoliak (mindegyik alapértéken lesz), feltehető, hogy a bemeneteken a távolságok kisebbek, mint a kimeneten:
-    $$ d_{in}(x, y) \leq d_{out}(x, y) $$
+    $$ d_{in}(x, y) \leq d_{out}(x, y), $$
+    ahol $ x \sim y $ példányok.
     
     Ugyanezt megfogalmazhatjuk egyszerűbben, ha a be és kimeneten ugyanaz a függvény méri a távolságot ($d_{in} \Leftrightarrow d_{out}$):
     \begin{equation}
@@ -316,15 +317,59 @@
 
     Az eddigiekből következik, hogy a fairness-függvény értéke az egyes párok $\delta$-jából lesz számítva; ezt az átszámítást végezze esetünkben egy $u$ (unfairness) függvény, $f_e$ jelezze az $e$ entitásosztályon belüli igazságosságot:
     \begin{equation}
-        f_e(S) \propto u_e\left(\ \bigcup_{x \sim y} \delta(x, y)\ \right)
+        f_e(S) \propto -u_e\left(\ \bigcup_{x \sim y} \delta(x, y)\ \right)
     \end{equation}
-    ahol $x::e$. Ezután a teljes fairségről megállapíthatjuk az egyszerű összefüggést:
+    ahol $x::e$. Ezután a teljes fairségről megállapíthatjuk az egyszerű meghstározást:
     \begin{equation}
         f(S) \propto \sum_{e \in E_S} f_e(S)
     \end{equation}
     
     Az eddig megállapítottakat kell a fairness-függvény megalkotásakor figyelembe vennünk; ez alól kivétel a $d$ pontos definíciója, hiszen az euklideszi távolság valódi távolságot mér két entitás között\footnote{Ha egy paraméter pl. $e^x$ jellegű értékeket vesz fel, azaz exponenciális eloszlású, akkor a paraméteren mért távolság torz; ezért figyelnünk kell a normáltakra, hogy lineárisak legyenek.}.
     
+    Az $u_e(S)$ unfairness függvényre könnyen adhatunk egy használható és kényelmes definíciót, ha az egyes entitáspárok különbségváltozására úgy tekintünk, mint a pár igazságtalanságára. Határozzuk meg $u_e(S)$ az egyes igazságtalanságok összegeként:
+    \begin{definition}[Osztályonkénti igazságtalanság]
+        \begin{equation}
+            u_e(S) = \sum_{x \sim y}^{|e|} \delta(x, y),
+        \end{equation}
+        ahol $x::e$ és $x \neq y$.        
+    \end{definition}
+
+    
+    Ezután kényelmes $u(S)$-t is meghatározni, mint az egyes osztályok igazságtalanságának összegét:
+    \begin{definition}[Beosztás igazságtalansága]
+        \begin{equation}
+            u(S) = \sum_{e \in E_S} u_e(S)
+        \end{equation}
+    \end{definition}
+    
+    Ezen definíciók használhatók $f$ megalkotásához közvetlenül, amennyiben ismerjük értékkészleteiket. Mivel $d_i$ egy tetszőleges entitás esetén is a $[0;1]$ intervallumon mozog (\ref{def:norm}), tudjuk, hogy $d$ értéke véges. Ebből következik, hogy létezik egy $\hat{d}_e$ maximális távolság minden $e \in E_S$ osztályban. $\delta$ definíciójából következik, hogy $$\hat{\delta}_e = \hat{d}_e, $$
+    így meg tudjuk állapítani $u_e(S)$ szélsőértékeit (tudva, hogy minden $\delta$ egyszer szerepel és $\delta(x, x) = 0$):
+    \begin{equation}
+        \hat{u}_e(S) = \sum_{x \sim y} \hat{\delta}_e = \binom{|G(e)|}{2} \cdot \hat{\delta}_e
+    \end{equation}
+    Ezután $\hat{u}(S)$ értéke:
+    \begin{equation}
+        \hat{u}(S) = \sum_{e \in E_S} \hat{u}_e(S)
+    \end{equation}
+    
+    Mivel minden $S$ beosztásra $u(S) \in [0; \hat{u}(S)]$, belátható az alábbi tény:
+    \begin{theorem}[Normált igazságtalanság]
+        Egy $S$ beosztás igazságtalanságának létezik normalizációja:
+        \begin{equation}
+            \exists \ \nu \circ u(S): [0; \hat{u}(S)] \to [0; 1]
+        \end{equation}
+    \end{theorem}
+    
+    Az eddigiekből $f$ egyszerűen definiálható:
+    
+    \begin{definition}[Általános FTA igazságossági mérték]
+        Tetszőleges $S$ beosztás igazságossági mértékét $f(S)$ adja, az alábbi formula szerint:
+        \begin{equation}
+            f(S) = 1 - \nu \circ u(S)
+        \end{equation}
+    \end{definition}
+    
+    Így tehát van egy definíciónk $f$-re, mely nem használja $d$ pontos meghatározását. Ez egy olyan skálán vehet fel értékeket, ahol a $0$ a tökéletesen igazságtalan, míg $1$ a tökéletesen igazságos beosztást jelenti. Érdemes lehet belegondolni, hogy ezeket az értékeket egy-egy beosztás milyen szélsőséges tulajdonság teljesülése esetén veheti fel (például létezik-e olyan beosztás, ahol $1$-nél több entitás is van, de $f(S) = 0$? Vagy van-e olyan igazságos beosztás, ami annyira igazságos, mintha be sem osztanánk az egyes entitásokat?).
 
 \section{Súlyozás}
     Felmerülhetnek az igazságossággal kapcsolatban további kérdések, melyek megválaszolásával optimálisabb vagy akár gyorsabban számítható eredményeket kaphatunk. Ilyen lehet például, hogy minden entitás közti igazságosság kell-e (pl. időszeletek egyformasága számít?), vagy vannak-e olyan paraméterek, amiket érzékenyebben kell kezelnünk, mint a többit (pl. a \enquote{rassz} vagy \enquote{párkapcsolati státusz} tulajdonság és a hitelbírálat sikeressége nem jó, ha korrelál, így ezt érzékenyebben vizsgálhatjuk $f$-hez).
@@ -363,6 +408,10 @@
             \begin{equation}\label{eq:sulyozott_euklideszi}
                 D(x, y) = \sqrt{\sum_{i=1}^{|e|} D_i^2(x, y)} 
             \end{equation}
+        \end{megj}
+        \begin{megj}
+        \label{megj:d_i_in01}
+            Vegyük észre, hogy $d_i$ definíciójából következően $d_i \in [0; 1]$ minden esetben.
         \end{megj}
     \end{definition}
     
@@ -458,7 +507,9 @@
     
     \pl Zárovizsgabeosztás esetén szerepelhet a modellben \textit{Vizsgáztató}, de nem szerepelhet \textit{Elnök} és \textit{Belső tag}, mert megeshet, hogy ezeket a szerepeket ugyanaz az ember tölti be, így (az utóbbi modellben) effektíve kétszer reprezentálunk egy példányt.
 
-\section{Igazságosság megállapításának folyamata}
+\section{Az algoritmus}
+    \subsection{Igazságosság megállapításának folyamata}
+    
     Az eddig kijelentett fogalmak alapján megalkothatunk egy eljárást, hogy végre megállapítsuk $f$ értékét tetszőleges beosztásra. Egy absztrakt verziót láthatunk \az{\ref{fig:flow}}. ábrán.
     
     \begin{figure}[ht]
@@ -467,7 +518,7 @@
                 inoutput/.style={circle, draw=black, very thick, minimum size=8mm},
                 red/.style={rectangle, draw=red!60, fill=red!5, very thick, minimum size=7mm},
                 blue/.style={rectangle, draw=blue!60, fill=blue!5, very thick, minimum size=7mm},
-                node distance= 3mm and 9mm
+                node distance= 3mm and 5mm
                 ]
                 
                 \node[red]      (sigma)                                 {$\sigma$};
@@ -482,28 +533,54 @@
                 
                 \node[blue]      (delta)            [below right=of dIn]{$\delta$};
                 
-                \node[inoutput]  (fairness)         [right=of delta]    {$f$};
+                \node[blue]      (unfairness)       [right=of delta]    {$u$};
+                
+                \node[inoutput]  (fairness)         [right=of unfairness]    {$f$};
                 
                 %Lines
                 \draw[->] (IS) -- (sigma);
                 \draw[->] (sigma) -- (OS);
-                \draw[->] (IS) -- (normIn) node[pos=0.5,fill=white] {$p$};
-                \draw[->] (OS) -- (normOut) node[pos=0.5,fill=white] {$p$};
+                \draw[->] (IS) -- (normIn) node[above,pos=0.5,fill=white] {$p$};
+                \draw[->] (OS) -- (normOut) node[above,pos=0.5,fill=white] {$p$};
                 \draw[->] (normIn) -- (dIn);
                 \draw[->] (normOut) -- (dOut);
-                \draw[->] (dIn) -- (delta);
-                \draw[->] (dOut) -- (delta);
-                \draw[->] (delta) -- (fairness) node[pos=0.5,fill=white] {$\propto$};
+                \draw[->] (dIn) -- (delta) node[above,pos=0.5,fill=white] {$c$};
+                \draw[->] (dOut) -- (delta) node[above,pos=0.5,fill=white] {$c$};
+                \draw[->] (delta) -- (unfairness);
+                \draw[->] (unfairness) -- (fairness) node[above,pos=0.5,fill=white] {$\nu$};
                     
             \end{tikzpicture}
-            \caption{A fairség ($f$) súlymentes megállapításának sematikus folyamata}
+            \caption{A fairség ($f$) megállapításának sematikus folyamata}
             \label{fig:flow}
         \end{center}
     \end{figure}
-    \blindtext[2] 
-
-\section{Algoritmusfüggetlenség}
-    \blindtext[2]
     
+    A folyamat első lépéseként feltételeztük, hogy a megkapott bemenet $I_S$-ből és $O_S$-ből áll, és minden egyes entitás egy $p$ parametrizáló függvény hattatásával születik. A bemenet feldolgozása, azaz a mi algoritmusunk az ábrán kékkel jelölt függvények hattatása, ahol az élekmentén halad az egyes függvények ki- és bemenete.
+    
+    Az algoritmus első lépése a normalizáció, így minden paraméter értékkészlete a $[0; 1]$ intervallum.
+    
+    Ezután következik második lépésként a távolságok meghatározása mind a bemeneti adathalmazon, mind a kimenetin, minden egyes homogén entitáspárra. Itt nem határoztuk meg pontosan, mit értünk távolság alatt, csupán az egyes paraméterekre (tehát a paraméterenkénti távolság és az entitások távolsága közti összefüggést nem definiáltuk pontosan).
+    
+    Opcionálisan végrehajthatunk súlyozást az előbbi lépés során; ennek különböző okai lehetnek (lásd fentebb).
+    
+    A harmadik lépés a be- és kimeneti szálak összevonása, a különbségváltozások meghatározásával.
+    
+    Negyedik lépésként egy egyszerű aggregált értékként megkapjuk $u$-t az egyes osztályok igazságtalansági mértékéből.
+    
+    Ötödik lépésként pedig megkapjuk a keresett $f$ értéket.
+
+    \subsection{Algoritmusfüggetlenség}
+    
+    Az ismertetett folyamat során hagytunk szabad teret mind a problémadefiníciónak, a pontos távolságdefiníciónak, és a beosztási algoritmusnak is. Ezzel az első\footnote{Muszáj megemlítenünk, hogy a problémadefiníció még mindig korlátozott, hiszen az entitásfüggetlen modellt megköveteljük.} és második meghatározott kritériumot teljesítettük. Tegyük hozzá, hogy lehetséges bevonni a paraméterek szemantikáját, ha meghatározunk súlyokat.
+    
+    A harmadik kritérium is teljesül, ha és amennyiben nem használunk súlyozást, vagy automatizált módszereket vetünk be annak pontos meghatározására.
+    
+    A negyedik kritérium egyértelműen teljesül; a kérdés pusztán az lehet, hogy a kapott eredmény mekkora kifejezőerővel bír, mennyire megbizható, stb.
+    
+\section{További lehetőségek}
+
+    Az itt leírtak alapján szükség lesz egy esettanulmányra, hogy az algoritmus helyességét és hasznosságát teszteljük. Ehhez szükség van még megfelelő tesztek előállítására is, itt értve a be- és kimeneteket.
+    
+    A módszert lehet tovább is elemezni, hiszen több aggály, fejlesztési lehetőség is felmerült (lásd a problémás szekciókat).
     
 \end{document}
