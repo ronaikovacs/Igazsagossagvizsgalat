@@ -10,9 +10,7 @@ Az eddig felkerült fejezetek:
 - Paraméterek függése
 - Normalizációs problémák
 - Távolságok 
-    *(Bővítése következik)*
 - Súlyozás 
-    *(További lehetőségekért lásd Súlyozási problémák)*
 - Súlyozási problémák
 - Igazságosság megállapításának folyamata
 
