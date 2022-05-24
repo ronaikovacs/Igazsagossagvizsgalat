@@ -3,16 +3,11 @@
 ### TL;DR
 Azt vizsgálom, hogyan írhatunk le egy általános beosztást, illetve ezt hogyan használhatjuk igazságosság megállapítására. Eközben figyelek arra, hogy a felmerülő lehetőségek az igazságosság mértékét hogyan befolyásolhatják.
 
-Az eddig felkerült fejezetek:
-- Bevezetés
-- Beosztások közti reláció
-- Általánosítás
-- Paraméterek függése
-- Normalizációs problémák
-- Távolságok 
-- Súlyozás 
-- Súlyozási problémák
-- Igazságosság megállapításának folyamata
+### Eredmény (2022.05.26-ig)
+- Definiált problémasémára 
+- tudunk adni egy [0; 1] közötti intervallumon mozgó f értéket minden beosztásra,
+- mely összehasonlítható egyéb izomorf beosztások f' értékével.
+- ~HBD, Happer!~
 
 ### Teendők, ha ezt olvasod
 
