@@ -6,8 +6,6 @@
 \usepackage{amsfonts}
 \usepackage{amsthm}
 
-\usepackage{multicol}
-
 \usepackage[magyar]{babel}
 \usepackage{t1enc}
 
@@ -46,7 +44,11 @@
 \maketitle
 
 \begin{abstract}
-    Az alábbiakban egy általános ember- és problémafüggetlen igazságosságmegállapítási algoritmust határozunk meg. Az ezzel kapcsolatos legnagyobb probléma, hogy a legtöbb beosztás esetén egyéni algoritmusok készítenek beosztásokat, egyéni be- és kimenetekre. Megállapítunk általánosítási eljárásokat és fogalmakat, és ezeket használva definiáljuk a hasonlóságot bemenetek között és az igazságosságot, mint ezen hasonlóság megtartását egy beosztás elkészítése során. 
+    Az alábbiakban egy általános ember- és problémafüggetlen igazságosságmegállapítási algoritmust határozunk meg. Az ezzel kapcsolatos legnagyobb probléma, hogy a legtöbb beosztás esetén egyéni algoritmusok készítenek beosztásokat, egyéni be- és kimenetekre. 
+    
+    Megállapítunk általánosítási eljárásokat és fogalmakat, és ezeket használva definiáljuk a hasonlóságot bemenetek között és az igazságosságot, mint ezen hasonlóság megtartását egy beosztás elkészítése során\footnote{A \enquote{Fairness Through Awareness} definíció szerint ez az igazságosság}. 
+    
+    Algoritmusunk eredményeként olyan mértéket kapunk a $[0; 1]$ intervallumon, mellyel összehasonlíthatunk két elkészült beosztást, melyek azonos kiinduló adathalmazból származnak.
 \end{abstract}
 
 \section{Bevezetés}
@@ -80,9 +82,11 @@
     Tegyük fel, hogy a beosztásainkat elkészítő folyamat egy $\sigma$ függvény, tehát $\sigma(I_S) = O_S$. Logikus lehet feltételezni azt, hogy eltérő bemenetekhez nem minden $\sigma$ esetén lehet ugyanazt a kimenetet rendelni.
     
 
-    \begin{theorem}
+    \begin{theorem}\label{thm:kulonbozoseg}
+    Létezik olyan beosztó, ami nem képes azonos beosztást készíteni semmilyen két különböző bemenetre.
         \begin{equation}
             \exists \sigma \ : \ 
+            \forall I_S \neq I_\Sigma \ : \ 
             \sigma(I_S)
             \not= 
             \sigma(I_\Sigma)
@@ -91,6 +95,8 @@
     
     Ennek jelentősége, hogy a beosztásokban az igazságosságot a kimenetek is szabják; ha egy kimenet eleve nem lehet elég megfelelő (mert olyan \enquote{szerencsétlen} bemenethez tartozik), akkor a hozzá tartozó igazságossági mérték sem az adott beosztásról ad nekünk információt: előfordulhat, hogy egy megadott bemenethez a lehető legoptimálisabb beosztás igazságossága is rosszabb, mint egy másik bemenethez tartozó legrosszabb beosztásé.
     
+    Ennek következtében az igazságosságot nem feltétlenül mérhetjük össze két különböző bemenetnél.
+    
     \begin{definition}[Izomorfia]
         Két beosztás pontosan akkor izomorf, ha azonos bemenetük van.
         \begin{equation} S \cong \Sigma \Longleftrightarrow I_S = I_\Sigma \end{equation}
@@ -98,6 +104,8 @@
             Két beosztás pontosan akkor izomorf, ha a beosztási algoritmus átalakításával elérhető, hogy a kimenetek azonosak legyenek.
         \end{megj}
     \end{definition}
+    
+    Ezután \az{\ref{thm:kulonbozoseg}} tétel alapján következik az alábbi.
     
     \begin{theorem}\label{thm:trihotomia}
         Két beosztás igazságossága között csakis akkor létezik reláció, ha a beosztások izomorfak.
@@ -125,29 +133,42 @@
             $E_S$ és $C_S$ pontos formájával nem kell foglalkoznunk, mert nem használjuk őket (ezek a $\sigma$ függvény definiálásához kellenek); elég tudnunk, hogy $E_S$ az entitásosztályok egy {\it halmaza}.
         \end{megj}
         \begin{megj} \label{megj:param_func}
-            Az entitások itt nem nyers adatként jelennek meg. Úgy kell őket elképzelnünk, mint egy paraméterszámítási {\it függvény} eredményét ($p(r) = \varepsilon$), ami a nyers adatokból releványs információkat nyer ki számunkra. Erre olyan esetek miatt van szükség, mint például záróvizsgabeosztásnál, ahol mindegy, mely hallgatókat vizsgáztatja egy oktató, a kérdés az, hány hallgatót vizsgáztat egy oktató.
+            Az entitások itt nem nyers adatként jelennek meg. Úgy kell őket elképzelnünk, mint egy paraméterszámítási {\it függvény} eredményét ($p(r) = x$), ami a nyers adatokból releványs információkat nyer ki számunkra. Erre olyan esetek miatt van szükség, mint például záróvizsgabeosztásnál, ahol mindegy, mely hallgatókat vizsgáztatja egy oktató, a kérdés az, hány hallgatót vizsgáztat egy oktató.
         \end{megj}
+    \end{definition}
+    
+    \begin{definition}[Parametrizációs függvény]
+        A nyers adatokból igazságosság szempontjából releváns adatokat kinyerő transzformációs függvény neve parametrizációs függvény. Jele: $p$
+        \begin{equation}
+            p(r) = x,
+        \end{equation}
+        ahol $r$ az entitás nyers formája, $x$ a számunkra fontos adatokat tartalmazó forma.
     \end{definition}
     
     \begin{definition}[Csoport]
         Azon entitások, melyek egy osztályba tartoznak, egy csoportot alkotnak. Egy $e \in E_S$ osztályhoz tartozó csoportot a következőképpen definiálunk:
         \begin{equation}
-            G(e) = \bigcup_{\varepsilon \ :: \ e} \varepsilon
+            G(e) = \bigcup_{x :: e} x
         \end{equation}
-        Ahol az $\varepsilon \ :: \ e$ jelentése, hogy $\varepsilon$ az $e$ osztályleírásnak megfelel. 
+        Ahol az $x \ :: \ e$ jelentése, hogy $x$ az $e$ osztályleírásnak megfelel. 
     \end{definition}
+    
+    \pl Órarendtervezéskor egy entitásosztály a \textit{tanár}, és ennek egy példánya \textit{Szeszlér Dávid}. \textit{Szeszlér Dávid} benne van a \textit{tanár}ok csoportjában.
+    $$ \text{Szeszlér} :: \text{tanár} \in E_{\text{órarend}} $$
+    $$ \text{Szeszlér} \in G(\text{tanár})$$
+    
     
     \begin{definition}[Homogenitás]
         Két entitás homogén egymással, ha azonos osztályhoz tartoznak.
         \begin{equation}
-            \varepsilon_1 \sim \varepsilon_2 \Longleftrightarrow \varepsilon_1 :: e \wedge \varepsilon_2 :: e
+            x \sim y \Longleftrightarrow x :: e \wedge y :: e
         \end{equation}
     \end{definition}
     
     Az egyes entitások leírása bővül a beosztás ($\sigma$) hattatása után, ezért érdemes megkülönböztetni a bemeneti és kimeneti állapotokat.
     
     \begin{definition}[Be- és kimeneti állapotleírás]
-        Egy $\varepsilon$ entitás bemeneti leírása $\subin{\varepsilon}$, kimeneti leírása $\subout{\varepsilon}$; hasonlóan a be- és kimeneti osztályleírás $\subin{e}$ és $\subout{e}$.
+        Egy $x$ entitás bemeneti leírása $\subin{x}$, kimeneti leírása $\subout{x}$; hasonlóan a be- és kimeneti osztályleírás $\subin{e}$ és $\subout{e}$.
     \end{definition}
     
     Ezen definíciók ismeretében már meg tudjuk határozni a bemenetet.
@@ -180,10 +201,10 @@
         Használjuk az alábbi lemmát:
             \begin{lemma}[Entitás-vektor azonosság] \label{lem:vektor}
                 Minden entitás leírható valós vektorként, azaz 
-                $\varepsilon = \vect{\varepsilon} \in \mathbb{R}^n$, 
-                ahol $n$ az $\varepsilon$ entitás paramétereinek száma (ideértve a számított paramétereket is).
+                $x = \vect{x} \in \mathbb{R}^n$, 
+                ahol $n$ az $x$ entitás paramétereinek száma (ideértve a számított paramétereket is).
             \end{lemma}
-            $\parallel I_{S,e}\parallel $ azonos a benne lévő entitások normáltjaival, hiszen azok egymástól függetlenek. Mivel ezek valós vektorok $\mathbb{R}^n$-ben (\ref{lem:vektor}), létezik normáltjuk, és így $I_{S,e}$-nek is létezik normáltja.
+            $\parallel I_{S,e}\parallel $ azonos a benne lévő entitások normáltjaival, hiszen azok egymástól függetlenek\footnote{Ezt egyelőre feltételezzük, később foglalkozunk még ezzel}. Mivel ezek valós vektorok $\mathbb{R}^n$-ben (\ref{lem:vektor}), létezik normáltjuk, és így $I_{S,e}$-nek is létezik normáltja.
         \end{proof}
         \begin{megj}
             A tétel fontossága, hogy tetszőleges beosztási problémánál a bemenetet általánosítani tudjuk.
@@ -195,27 +216,28 @@
     
 \section{Paraméterek függése}
 
-    Az eddigiek alapján szeretnénk elérni, hogy az igazságossági függvény ($f$) bemenetei általánosak legyenek, és ehhez meghatároztuk a befogadható formákat. A teljes általánosításhoz azonban el kell végeznünk a normalizációt is, hogy tényleg tetszőleges entitásokkal tudjunk dolgozni. 
+    Az eddigiek alapján szeretnénk elérni, hogy az igazságossági függvény ($f$) bemenetei általánosak legyenek, és ehhez meghatároztuk a befogadható formákat (\ref{def:problema}). A teljes általánosításhoz azonban el kell végeznünk a normalizációt is, hogy tényleg tetszőleges entitásokkal tudjunk dolgozni. 
     
-    A probléma itt a normalizációval van, hiszen meg kell határoznunk, hogy hogyan lehetne tulajdonságvesztés nélkül, a paraméterek egymáshoz való relációjának megtartásával együtt módosítani az entitásokat.
+    A probléma itt az, hogy meg kell határoznunk, hogyan lehetne tulajdonságvesztés nélkül, a paraméterek egymáshoz való relációjának megtartásával együtt módosítani az entitásokat.
     
-    Mivel 
+    Mivel entitásosztályaink különbözőek, tudjuk, hogy
     \begin{equation}
         \norm{I_S}  = \bigcup_{e\ \in \ E_S} \norm{I_{S,e}} ,
     \end{equation}
-    a teljes bemenetet tudjuk normálni, amennyiben az csoportokat egyesével tudjuk normálni. Ezt meg tudjuk tenni, mivel a csoport entitásai egymástól függetlenek (ahogy azt \az{(\ref{thm:norm1})} tétel bizonyításakor feltételeztük).
+    így a teljes bemenetet tudjuk normálni, amennyiben az csoportokat egyesével tudjuk normálni. Ezt meg tudjuk tenni, mivel a csoport entitásai egymástól függetlenek (ahogy azt \az{(\ref{thm:norm1})} tétel bizonyításakor feltételeztük).
     
+    \begin{megj}
     Logikusnak tűnhet, hogy (mivel valós vektorokról van szó) ezeket egész egyszerűen euklideszi hosszúsággal leoszzuk:
     $$ \parallel\vect{v}\parallel = \frac{1}{|\vect{v}|} \vect{v} $$
     így kapva egy egység hosszú vektort tetszőleges $\mathbb{R}^n$ térben. Azonban ezzel elkövethetjük azt a hibát, hogy két relatíve távoli pont távolságát 0-ra csökkentjük.
-    
+    \end{megj}
     \pl $\vect u = (0, 1, 1)$; \ $\vect v = (1, 1, 1)$; \ $\vect w = (10, 10, 10)$
     vektorok esetén normálás során $\vect v$ és $\vect w$ távolsága $15.588$-ról $0$-ra csökken, míg $\vect v$ és $\vect u$ távolsága $1$-ről $0.605$-re csökken; tehát a $\vect v - \vect w$ és $\vect v - \vect u$ közti reláció megfordul, ha ezeket egyesével normáljuk (jelen példában feltételeztük, hogy két vektor távolsága megegyezik azok különbségével).
     
     A példában látható jelenséget szeretnénk elkerülni, így máshogyan kell a normalizációt definiálnunk.
     
     \begin{definition}[Normalizáció]\label{def:norm}
-        Egy $\vect\varepsilon$ entitás normáltja $\nu(\vect\varepsilon)$ (vagy $\norm{\vect\varepsilon}$). A normálás az azonos paraméterek közti relációt megtartja, de a vektort véges térbe transzformálja.
+        Egy $\vect x$ entitás normáltja $\nu(\vect x)$ (vagy $\norm{\vect x}$). A normálás az azonos paraméterek közti relációt megtartja, de a vektort véges térbe transzformálja.
         \begin{equation}
             \nu : \mathbb{R}^n \to [r_1; r_2]^n,
         \end{equation}
@@ -236,9 +258,9 @@
         Amennyiben az entitás paraméterei függetlenek, az entitás normáltja megegyezik az entitás paramétereinek normáltjával:
         \begin{equation}
             \forall i \neq j \ : \ 
-            \vect\varepsilon_i \not \propto \vect\varepsilon_j 
+            \vect x_i \not \propto \vect x_j 
             \ \Longrightarrow \
-            \norm{\vect\varepsilon}_i = \norm{\vect\varepsilon_i}
+            \norm{\vect x}_i = \norm{\vect x_i}
         \end{equation}
     \end{theorem}
     
@@ -247,13 +269,13 @@
         
         \begin{proof}
             Mivel $f$ csak adott bemenetre ad számszerű értéket (\ref{thm:trihotomia}), ismerjük a teljes lehetséges értékkészletet minden paraméterre. Ebben az esetben (tehát mindig) belátható, hogy 
-            $$ \nu_i(\varepsilon) : [r_1; r_2] \to [0; 1], $$
-            ahol $r_1 = \arg_\varepsilon\min(\varepsilon_i)$ és $r_2 = \arg_\varepsilon\max(\varepsilon_i)$.
+            $$ \nu_i(x) : [r_1; r_2] \to [0; 1], $$
+            ahol $r_1 = \arg_x\min(x_i)$ és $r_2 = \arg_x\max(x_i)$.
             Tudjuk, hogy minden entitásra igaz, hogy azonos paramétereik között a relációs viszony megmarad (\ref{def:norm}), így $\nu_i^{-1}$ maga is megfelel a normalizáció fogalmának. Ekkor könnyen választhatunk egy olyan értékkészletet, amely az eredeti paraméter értelmezési tartománya. Ezzel megalkottuk $\nu$ inverzét. (És megállapítottuk, hogy $\nu$ bijektív).
         \end{proof}
-        \begin{megj}
+        \begin{kov}
             Ezzel beláttuk, hogy normalizáció során nem történik információvesztés.
-        \end{megj}
+        \end{kov}
     \end{theorem}
     
 \section{Normalizációs problémák}
@@ -267,38 +289,66 @@
     
 \section{Távolságok}    
     
-    A távolságok nagy szerepet játszanak az igazságosság megállapításában, hiszen a beosztás előtti és utáni távolságok közti eltérésből deríthetjük ki a legszembetűnőbb anomáliákat (ha csak 1GHz-es CPU-ink vannak, rendben van, hogy mind ugyanannyi feladatot kap; de ha van mellette egy 10GHz-es is, akkor az egyenlő szétosztás nem igazságos).
+    A távolságok nagy szerepet játszanak az igazságosság megállapításában, hiszen a beosztás előtti és utáni távolságok közti eltérésből deríthetjük ki a legszembetűnőbb anomáliákat.
     
-    Mivel a bemeneteken azok a paraméterek, melyeket csak a beosztás befolyásol nem lesznek egymástól távoliak (mindegyik alapértéken lesz), feltehető, hogy a bemeneteken a távolságok kisebbek, mint a kimeneten:
-    $$ d_{in}(x, y) \leq d_{out}(x, y), $$
-    ahol $ x \sim y $ példányok.
+    A távolság felfogható ebben a problémában úgy, mint két entitás \enquote{hasonlótlanságának} mértéke.
     
-    Ugyanezt megfogalmazhatjuk egyszerűbben, ha a be és kimeneten ugyanaz a függvény méri a távolságot ($d_{in} \Leftrightarrow d_{out}$):
-    \begin{equation}
-        d(\subin{x}, \subin{y}) \leq d(\subout{x}, \subout{y})
-    \end{equation}
+    \pl Ha csak 1GHz-es CPU-ink vannak, rendben van, hogy mind ugyanannyi feladatot kap; de ha van mellette egy 10GHz-es is, akkor az egyenlő szétosztás nem igazságos. Ez azért van, mert az 1GHz-es magok távolsága 0, de a 10GHz-es magtól való távolságuk 9(GHz).
     
-    Itt egy feladatunk maradt: határozzuk meg $d$-t.
+    \begin{theorem}[Állapotfüggetlen paraméterszámosság, ÁFPSZ]
+        Egy $x::e$ entitás $\subin x$ és $\subout x$ állapotai leírhatók azonos hosszúságú vektorokkal mindenféle torzulás nélkül, azaz
+        \begin{equation}
+            |\subin x| = |\subout x| = |e|
+        \end{equation}
+        Ezt úgy tehetjük meg, hogy $\subin x$ valódi paraméterei mellé csatolunk $ \dim(\subout x) - \dim(\subin x) $ darab (konstans értékű) \enquote{álparamétert}. 
+    \end{theorem}
+    
+    \begin{definition}[Résztávolság]\label{def:partial_distance}
+        A résztávolság egy $x \sim y :: e$ entitáspár azonos paramétereinek távolsága, azaz abszolút különbsége.
+        \begin{equation}
+            d_i(x, y) = |x_i - y_i|
+        \end{equation}
+        Ez vonatkozik a példányok mindkét állapotára.
+        \begin{megj}
+            Amennyiben az entitásaink normáltak, $d_i(x, y) \in [0;1]$ minden párra.
+        \end{megj}
+    \end{definition}
     
     \begin{definition}[Távolságfüggvény]
         Az igazságossági távolságfüggvény két azonosan paraméterezett entitásról ad olyan arányszámot, melyből azoknak különbözősége megállapítható. A beosztásban akkor állapíthatunk meg igazságtalanságot vagy igazságossági anomáliát, ha a be- és kimeneten mért távolságok jelentősen eltérnek.
         \begin{equation}
             d: \mathbb{R}^{2|e|} \to \mathbb{R}
         \end{equation}
-        ahol $|e|$ az $e$ entitásosztály paramétereinek száma (azaz egy $\varepsilon :: e$ vektor mérete).
-    \end{definition}
-    
-    Amennyiben valóban feltehetjük, hogy a paraméterek eloszlása azonos, minden két példány paraméterein ugyanazt a műveletet kell elvégeznünk, majd egyetlen összegző művelettel megállapíthatjuk, hogy az ezen paramétereket tartalmazó entitások távolsága mekkora. 
-    
-    \begin{definition} (Távolság) \label{def:tavolsag}
-        Két entitás távolsága az őket leíró vektorok euklideszi távolsága (lineáris eloszlású normáltak esetén \footnote{Szükség van linearitásra? Nem elég, ha mind ugyanolyan? Egyáltalán ez az engedmény valóban engedmény lenne (azon kívül, hogy általánosabb esetet fedne a definíció)?}).
         \begin{equation}
-            d(x, y) = \sqrt{\sum_{i=1}^{|e|} (x_i - y_i)^2 } 
+            d(x, y) \propto \bigcup_{i=1}^{|e|} d_i(x, y)
         \end{equation}
-        ahol $x \sim y$.
     \end{definition}
     
-    Ezután állapítsuk meg, miért fontos ez számunkra. Igazságosnak akkor tekintünk egy beosztást, ha a beosztás elkészítése során nem torzítjuk azokat a távolságokat, melyek már a bemeneten is léteznek. Ezt felfoghatjuk úgy is, mint a Lipschitz-tulajdonság betartását (valamely $M$ konstansra):
+    \begin{theorem}[Bemeneti távolság megmaradása]
+        Az ÁFPSZ használata nem befolyásolja a távolságokat.
+        \begin{proof} Tekintsük az alábbi eseteket:
+            \begin{itemize} 
+                \item[(A)] ÁFPSZ esetén a kimeneti vektorok nem módosulnak, így a távolság sem változik.
+                \item[(B)] A bemeneti vektorokon eredetileg szereplő paraméterek távolsága nem változik.
+                \item[(C)] A bemeneti vektoron megjelenő paraméterek egy konstans $c$ értéket vesznek fel, tehát
+                \begin{equation}
+                    d_i(x, y) = |c-c| = 0
+                \end{equation}
+            \end{itemize}
+            Tehát a megjelenő paraméterek távolsága nem módosítja az entitások távolságát, ameddig nem szorzatként definiáljuk a $d$ függvényt.
+        \end{proof}
+    \end{theorem}
+    
+    Mivel a kimeneten több paraméter van, melyek eltérhetnek a bemeneti értéktől, feltehetjük, hogy
+    $$ d_{in}(x, y) \leq d_{out}(x, y), $$
+    ahol $ x \sim y $ példányok.
+    
+    Ugyanezt megfogalmazhatjuk egyszerűbben, ha a be és kimeneten ugyanaz a függvény méri a távolságot:
+    \begin{equation}
+        d(\subin{x}, \subin{y}) \leq d(\subout{x}, \subout{y})
+    \end{equation}
+    
+    Állapítsuk meg, miért fontos ez számunkra. Igazságosnak akkor tekintünk egy beosztást, ha a beosztás elkészítése során nem torzítjuk azokat a távolságokat, melyek már a bemeneten is léteznek. Ezt felfoghatjuk úgy is, mint a Lipschitz-tulajdonság betartását (valamely $M$ konstansra):
     \begin{equation}
         \forall x \sim y : \ d(\subin{x}, \subin{y}) \leq Md(\subout{x}, \subout{y})
     \end{equation}
@@ -315,21 +365,18 @@
         \end{equation}
     \end{definition}
 
-    Az eddigiekből következik, hogy a fairness-függvény értéke az egyes párok $\delta$-jából lesz számítva; ezt az átszámítást végezze esetünkben egy $u$ (unfairness) függvény, $f_e$ jelezze az $e$ entitásosztályon belüli igazságosságot:
+    Az eddigiekből következik, hogy a fairness-függvény értéke az egyes párok $\delta$-jából lesz számítva; ezt az átszámítást végezze esetünkben egy $u_e$ (unfairness) függvény minden $e$ osztályra. Ekkor adódik, hogy
     \begin{equation}
-        f_e(S) \propto -u_e\left(\ \bigcup_{x \sim y} \delta(x, y)\ \right)
+        f(S) \propto \bigcup_{e \in E_S} \left( f_e(S) \propto -u_e(S) \propto \bigcup_{x \sim y} \delta(x, y) \right)
     \end{equation}
-    ahol $x::e$. Ezután a teljes fairségről megállapíthatjuk az egyszerű meghstározást:
-    \begin{equation}
-        f(S) \propto \sum_{e \in E_S} f_e(S)
-    \end{equation}
+    ahol $x::e$.
     
-    Az eddig megállapítottakat kell a fairness-függvény megalkotásakor figyelembe vennünk; ez alól kivétel a $d$ pontos definíciója, hiszen az euklideszi távolság valódi távolságot mér két entitás között\footnote{Ha egy paraméter pl. $e^x$ jellegű értékeket vesz fel, azaz exponenciális eloszlású, akkor a paraméteren mért távolság torz; ezért figyelnünk kell a normáltakra, hogy lineárisak legyenek.}.
+    Az eddig megállapítottakat kell a fairness-függvény megalkotásakor figyelembe vennünk.
     
-    Az $u_e(S)$ unfairness függvényre könnyen adhatunk egy használható és kényelmes definíciót, ha az egyes entitáspárok különbségváltozására úgy tekintünk, mint a pár igazságtalanságára. Határozzuk meg $u_e(S)$ az egyes igazságtalanságok összegeként:
+    Az $u_e(S)$ unfairness függvényre könnyen adhatunk egy használható és kényelmes definíciót: határozzuk meg $u_e(S)$ az egyes \enquote{igazságtalanságok} összegeként:
     \begin{definition}[Osztályonkénti igazságtalanság]
         \begin{equation}
-            u_e(S) = \sum_{x \sim y}^{|e|} \delta(x, y),
+            u_e(S) = \sum_{x \sim y} \delta(x, y),
         \end{equation}
         ahol $x::e$ és $x \neq y$.        
     \end{definition}
@@ -342,17 +389,19 @@
         \end{equation}
     \end{definition}
     
-    Ezen definíciók használhatók $f$ megalkotásához közvetlenül, amennyiben ismerjük értékkészleteiket. Mivel $d_i$ egy tetszőleges entitás esetén is a $[0;1]$ intervallumon mozog (\ref{def:norm}), tudjuk, hogy $d$ értéke véges. Ebből következik, hogy létezik egy $\hat{d}_e$ maximális távolság minden $e \in E_S$ osztályban. $\delta$ definíciójából következik, hogy $$\hat{\delta}_e = \hat{d}_e, $$
+    Ezen definíciók használhatók $f$ megalkotásához közvetlenül, amennyiben ismerjük értékkészleteiket. Mivel $d_i$ egy tetszőleges entitás esetén is a $[0;1]$ intervallumon mozog (\ref{def:norm}, \ref{def:partial_distance}), tudjuk, hogy $d$ értéke véges. Ebből következik, hogy létezik egy $\hat{d}_e$ maximális távolság minden $e \in E_S$ osztályban. $\delta$ definíciójából következik, hogy $$\hat{\delta}_e = \hat{d}_e, $$
     így meg tudjuk állapítani $u_e(S)$ szélsőértékeit (tudva, hogy minden $\delta$ egyszer szerepel és $\delta(x, x) = 0$):
     \begin{equation}
+    \label{eq:max_uS}
         \hat{u}_e(S) = \sum_{x \sim y} \hat{\delta}_e = \binom{|G(e)|}{2} \cdot \hat{\delta}_e
     \end{equation}
     Ezután $\hat{u}(S)$ értéke:
     \begin{equation}
+    \label{eq:max_u}
         \hat{u}(S) = \sum_{e \in E_S} \hat{u}_e(S)
     \end{equation}
     
-    Mivel minden $S$ beosztásra $u(S) \in [0; \hat{u}(S)]$, belátható az alábbi tény:
+    Mivel minden $S$ beosztásra $u(S) \in [0; \hat{u}(S)]$ (hiszen $\check{u}(S) = 0$), belátható az alábbi tény:
     \begin{theorem}[Normált igazságtalanság]
         Egy $S$ beosztás igazságtalanságának létezik normalizációja:
         \begin{equation}
@@ -362,25 +411,48 @@
     
     Az eddigiekből $f$ egyszerűen definiálható:
     
-    \begin{definition}[Általános FTA igazságossági mérték]
+    \begin{definition}[Általános FTA\footnote{Fairness Through Awareness: beosztás előtti és utáni hasonlóság megtartása azonos az igazságossággal.} igazságossági mérték]
         Tetszőleges $S$ beosztás igazságossági mértékét $f(S)$ adja, az alábbi formula szerint:
         \begin{equation}
             f(S) = 1 - \nu \circ u(S)
         \end{equation}
     \end{definition}
     
-    Így tehát van egy definíciónk $f$-re, mely nem használja $d$ pontos meghatározását. Ez egy olyan skálán vehet fel értékeket, ahol a $0$ a tökéletesen igazságtalan, míg $1$ a tökéletesen igazságos beosztást jelenti. Érdemes lehet belegondolni, hogy ezeket az értékeket egy-egy beosztás milyen szélsőséges tulajdonság teljesülése esetén veheti fel (például létezik-e olyan beosztás, ahol $1$-nél több entitás is van, de $f(S) = 0$? Vagy van-e olyan igazságos beosztás, ami annyira igazságos, mintha be sem osztanánk az egyes entitásokat?).
+    Így tehát van egy definíciónk $f$-re, mely nem használja $d$ pontos meghatározását.
+    
+    \begin{definition}[Fairness-függvény]
+        Általános, a \ref{def:problema} definíciónak megfelelő probléma igazságosságát az $f$ függvény adja, ahol 
+        \begin{equation}
+            f: \ \bigcup_{e \in E_S} \mathbb{R}^{|G(e)| \times |e|} \to [0;1]
+        \end{equation}
+        Ennek értéke:
+        \begin{equation}
+            f(S) = 1 - \frac{1}{ \hat{u}(S) } \cdot \sum\limits_{e \in E_S} \sum\limits_{x \sim y} \delta(x,y)
+        \end{equation}
+        A képlet (\ref{eq:max_uS}) és (\ref{eq:max_u}) helyességén alapul, és feltételezi, hogy
+        \begin{equation}
+            \nu(u) = \frac{u - \check u}{\hat u - \check u}
+        \end{equation}
+    \end{definition}
+    
+    
+    Ez egy olyan skálán vehet fel értékeket, ahol a $0$ a tökéletesen igazságtalan, míg $1$ a tökéletesen igazságos beosztást jelenti\footnote{Érdemes lehet belegondolni, hogy ezeket az értékeket egy-egy beosztás milyen szélsőséges tulajdonság teljesülése esetén veheti fel (például létezik-e olyan beosztás, ahol $1$-nél több entitás is van, de $f(S) = 0$? Vagy van-e olyan igazságos beosztás, ami annyira igazságos, mintha be sem osztanánk az egyes entitásokat?).}.
 
 \section{Súlyozás}
-    Felmerülhetnek az igazságossággal kapcsolatban további kérdések, melyek megválaszolásával optimálisabb vagy akár gyorsabban számítható eredményeket kaphatunk. Ilyen lehet például, hogy minden entitás közti igazságosság kell-e (pl. időszeletek egyformasága számít?), vagy vannak-e olyan paraméterek, amiket érzékenyebben kell kezelnünk, mint a többit (pl. a \enquote{rassz} vagy \enquote{párkapcsolati státusz} tulajdonság és a hitelbírálat sikeressége nem jó, ha korrelál, így ezt érzékenyebben vizsgálhatjuk $f$-hez).
+    Felmerülhetnek az igazságossággal kapcsolatban további kérdések, melyek megválaszolásával optimálisabb vagy akár gyorsabban számítható eredményeket kaphatunk. Ilyen lehet például, hogy minden entitás közti igazságosság kell-e, vagy vannak-e olyan paraméterek, amiket érzékenyebben kell kezelnünk, mint a többit?
+    
+    \pl Időszeletek egyformasága számít egy kész órarendnél?
+    
+    \pl A \enquote{hitelbírálat elfogadása} és a \enquote{rassz} vagy \enquote{párkapcsolati státusz} tulajdonság korrelálnak, de a többi tulajdonság nem.
     
     Paraméterek fontosságának kijelentéséhez definiáljuk a súlyokat.
     
-    Innentől jelölje jobb felső indexben zárójelezett változó az entitás osztályát: $x^{(e)} \Leftrightarrow x::e$.
+    \begin{megj}
+        Innentől jelölje jobb felső indexben zárójelezett változó az entitás osztályát: $x^{(e)} \Leftrightarrow x::e$.
+    \end{megj}
     
     \begin{definition}[Súly]
         Egy osztály egy példányának $\ent{x}{e}_i$ paraméteréhez tartozó súlya azt fejezi ki, mennyire befolyásolja a fairséget egy $y\sim x$ példány $\ent{y}{e}_i$ paraméterétől való eltérés. 
-        
         Ezen súly minden esetben nem negatív értéket vesz fel.
         \begin{equation}
             \ent{\vect w}{e} \in [0;\infty)^{|e|}
@@ -390,29 +462,15 @@
     \begin{definition}[Súlyozott entitás]
         Egy entitás súlyozása a paraméterenkénti szorzat számításából adódik:
         \begin{equation}
-            \ent X e = \ent w e \ent x e
+            \ent w e \odot \ent x e
         \end{equation}
     \end{definition}
     
     \begin{definition}[Súlyozott (rész)távolság]
-        A súlyozott távolság megegyezik a paraméterenkénti távolságok súlyokkal vett szorzatából számított távolságokkal. Az $i.$ résztávolság jele $d_i$:
-        \begin{equation}
-            d_i(x, y) = d(x_i, y_i),
-        \end{equation}
-        a súlyozott résztávolságok ekkor:
-        \begin{equation}
-            D_{i}(x, y) = w_id_i(x, y)
-        \end{equation}
-        \begin{megj}
-            Mi esetünkben $d(x, y) = |x-y|$, tehát
-            \begin{equation}\label{eq:sulyozott_euklideszi}
-                D(x, y) = \sqrt{\sum_{i=1}^{|e|} D_i^2(x, y)} 
-            \end{equation}
-        \end{megj}
-        \begin{megj}
-        \label{megj:d_i_in01}
-            Vegyük észre, hogy $d_i$ definíciójából következően $d_i \in [0; 1]$ minden esetben.
-        \end{megj}
+        A súlyozott távolság megegyezik a paraméterenkénti távolságok súlyokkal vett szorzatából számított távolsággal.
+        \begin{equation*}
+            w_i d_i(x, y)
+        \end{equation*}
     \end{definition}
     
     \begin{megj}
@@ -420,30 +478,24 @@
     \end{megj}
     
     \begin{allitas}
-        Amennyiben $d$ az euklideszi távolság, azaz $d(x,y) = |\vect x - \vect y|,$ akkor a különbségenkénti súlyozás helyettesíthető entitássúlyozással.
+        A távolságonkénti súlyozás helyettesíthető entitássúlyozással.
         \begin{proof}
-            Határozzuk meg $d_i(x, y)$-t:
-            \begin{equation}
-                d_i(x,y) = |\vect x_i - \vect y_i|,
-            \end{equation}
-            tehát
             \begin{equation}
             \begin{split}
-                D_i(x, y) &= w_i d_i(x, y) \\
+                d_i'(x, y) &= w_i d_i(x, y) \\
                 &= w_i |x_i - y_i| \\
                 &= |w_i x_i - w_i y_i| \\
-                &= d_i(wx, wy)
+                &= d_i(w \odot x, w \odot y)
             \end{split}
             \end{equation}
-            (\ref{eq:sulyozott_euklideszi}) ismeretében belátható, hogy euklideszi távolságok esetén a súlyozott résztávoságokból számított $d$ valóban megegyezik a súlyozott entitásokból számított $d$ értékével.
         \end{proof}
         \begin{megj}
-            Ennek hasznossága leginkább, hogy $D(x, y)$ számításakor nem kell elvégeznünk a $w_i$-vel való szorzásokat minden $(x,y)$ párra, elég a számítás előtt minden $\varepsilon$ entitást felskálázni $w$-vel.
+            Ennek hasznossága leginkább, hogy $d'(x, y)$ számításakor nem kell elvégeznünk a $w$-vel való elemenkénti szorzásokat minden $(x,y)$ párra, elég a számítás előtt minden $ w \odot x $ értékét kiszámítani.
         \end{megj}
     \end{allitas}
     
-    \begin{theorem}[Awareness - unawareness átjárhatóság]
-        Bináris súlyok használatával elérhető, hogy a \textit{fairness through unawareness} (FTU) definíciót felhasználjuk, annak ellenére, hogy a \textit{fairness through awareness} (FTA) szerint haladt az eddigi gondolatmenetünk. 
+    \begin{theorem}[FTA - FTU\footnote{Fairness Through Unawareness: Az igazságosság teljesül akkor és csak akkor, ha az érzékeny változók ismeretében a beosztás elvégzése során születő távolságok hasonlóak annak a beosztásnak a távolságaihoz, amit az érzékeny változók \enquote{letakarásával} kapunk. } átjárhatóság]
+        Bináris súlyok használatával elérhető, hogy az FTU definíció szerint járjunk el, annak ellenére, hogy az FTA szerint haladt az eddigi gondolatmenetünk. 
         
         Ekkor az érdektelen változók súlyát 0-ra, a többi súlyt 1-re kell beállítanunk, így kapva egy $f_1$ fairness értéket; majd minden súlyt 1-re állítva kapunk egy $f_2$ értéket. Ezek különbsége mondja meg, hogy az FTU definíció szerint igazságos-e az adott beosztás:
         $$ |f_1 - f_2| < h_{FTU} \Leftrightarrow S \text{ igazságos}, $$
@@ -455,6 +507,8 @@
     Ennek áthidalása tehát kényelmes lenne, ezért vizsgáljuk meg, hogyan segíthetnek a súlyozások.
 
     Paraméterek esetén, ha több is ugyanazt az információt hordozza magában, tehát valamely $e$-re $$\forall x::e : \ \ent x e _i \propto \ent x e _j,$$ vagy máshogyan kifejezve $e_i \propto e_j$, akkor (hiába lehetséges, hogy eltérően definiálja $p$ ezen értékeket) az információt redukálnunk kell 1 paraméterbe.
+    
+    \pl $x_1$ = foglalt idősávok száma; $x_2$ = foglalatlan idősávok száma.
 
     \begin{theorem}
         Súlyokkal elérhető, hogy a redundáns paraméterek információja ne legyen túlreprezentálva.
@@ -466,7 +520,7 @@
             
             Amit el szeretnénk érni, hogy az $R$-beli értékek összesen akkora súlyúak legyenek, mint egyetlen paraméter. Ezt (az azonos értékkészlet miatt) megtehetjük úgy, hogy $\frac{1}{|R|}$ együtthatót adunk nekik.
             
-            Alapvetően ezt akkor tehetjük meg, ha teljes a redundancia; de ezt feltételezhetjük, mivel minden egyes paraméter (a problémánk szempontjából) elemi információ (tehát nincs részleges függés).
+            Alapvetően ezt akkor tehetjük meg, ha teljes a redundancia; de ezt feltételezhetjük, mivel minden egyes paraméter (a problémánk szempontjából) elemi információt hordoz (tehát nincs részleges függés).
         \end{proof}
     \end{theorem}
     
@@ -483,14 +537,16 @@
         \end{equation}
     \end{definition}
     
+    \pl Ha $R = \{ x_1, x_2, x_3 \}$ halmaz tartalmazza az összes olyan paramétert, mely $x_1$-gyel redundáns, akkor $\ent r e _1 = \frac{1}{3}$.
+    
     \begin{definition}[összesített együttható, korrigált távolság]
         Egy $e_i$ paraméter összesített együtthatója $\ent c e _i$ megegyezik $e_i$ összes együtthatójának szorzatával. Mi esetünkben ez:
         \begin{equation}
-            \ent c e _i = \ent r e _i \ent w e _i
+            \ent c e _i = \ent r e _i \odot \ent w e _i
         \end{equation}
         Ezzel újradefiniálható a korrigált (rész)távolság is:
         \begin{equation}
-            D_i(x, y) = c_i d_i(x, y)
+            d_i'(x, y) = c_i d_i(x, y)
         \end{equation}
     \end{definition}
 
@@ -507,10 +563,10 @@
     
     \pl Zárovizsgabeosztás esetén szerepelhet a modellben \textit{Vizsgáztató}, de nem szerepelhet \textit{Elnök} és \textit{Belső tag}, mert megeshet, hogy ezeket a szerepeket ugyanaz az ember tölti be, így (az utóbbi modellben) effektíve kétszer reprezentálunk egy példányt.
 
-\section{Az algoritmus}
-    \subsection{Igazságosság megállapításának folyamata}
+\section{Áttekintés}
+    \subsection{Teljes folyamat}
     
-    Az eddig kijelentett fogalmak alapján megalkothatunk egy eljárást, hogy végre megállapítsuk $f$ értékét tetszőleges beosztásra. Egy absztrakt verziót láthatunk \az{\ref{fig:flow}}. ábrán.
+    Az eddig kijelentett fogalmak alapján megalkothatunk egy eljárást, hogy megállapítsuk $f$ értékét tetszőleges beosztásra. Egy absztrakt verziót láthatunk \az{\ref{fig:flow}}. ábrán.
     
     \begin{figure}[ht]
         \begin{center}
@@ -542,45 +598,72 @@
                 \draw[->] (sigma) -- (OS);
                 \draw[->] (IS) -- (normIn) node[above,pos=0.5,fill=white] {$p$};
                 \draw[->] (OS) -- (normOut) node[above,pos=0.5,fill=white] {$p$};
-                \draw[->] (normIn) -- (dIn);
-                \draw[->] (normOut) -- (dOut);
-                \draw[->] (dIn) -- (delta) node[above,pos=0.5,fill=white] {$c$};
-                \draw[->] (dOut) -- (delta) node[above,pos=0.5,fill=white] {$c$};
+                \draw[->] (normIn) -- (dIn) node[above,pos=0.5,fill=white] {$c$};
+                \draw[->] (normOut) -- (dOut) node[above,pos=0.5,fill=white] {$c$};
+                \draw[->] (dIn) -- (delta);
+                \draw[->] (dOut) -- (delta);
                 \draw[->] (delta) -- (unfairness);
                 \draw[->] (unfairness) -- (fairness) node[above,pos=0.5,fill=white] {$\nu$};
                     
             \end{tikzpicture}
-            \caption{A fairség ($f$) megállapításának sematikus folyamata}
+            \caption{A fairség ($f$) megállapítása}
             \label{fig:flow}
         \end{center}
     \end{figure}
     
-    A folyamat első lépéseként feltételeztük, hogy a megkapott bemenet $I_S$-ből és $O_S$-ből áll, és minden egyes entitás egy $p$ parametrizáló függvény hattatásával születik. A bemenet feldolgozása, azaz a mi algoritmusunk az ábrán kékkel jelölt függvények hattatása, ahol az élekmentén halad az egyes függvények ki- és bemenete.
-    
-    Az algoritmus első lépése a normalizáció, így minden paraméter értékkészlete a $[0; 1]$ intervallum.
-    
-    Ezután következik második lépésként a távolságok meghatározása mind a bemeneti adathalmazon, mind a kimenetin, minden egyes homogén entitáspárra. Itt nem határoztuk meg pontosan, mit értünk távolság alatt, csupán az egyes paraméterekre (tehát a paraméterenkénti távolság és az entitások távolsága közti összefüggést nem definiáltuk pontosan).
-    
-    Opcionálisan végrehajthatunk súlyozást az előbbi lépés során; ennek különböző okai lehetnek (lásd fentebb).
-    
-    A harmadik lépés a be- és kimeneti szálak összevonása, a különbségváltozások meghatározásával.
-    
-    Negyedik lépésként egy egyszerű aggregált értékként megkapjuk $u$-t az egyes osztályok igazságtalansági mértékéből.
-    
-    Ötödik lépésként pedig megkapjuk a keresett $f$ értéket.
+    A folyamat első lépéseként feltételeztük, hogy a megkapott bemenet $I_S$-ből és $O_S$-ből áll, és minden egyes entitás egy $p$ parametrizáló függvény hattatásával születik. A bemenet feldolgozása, azaz a mi algoritmusunk az ábrán kékkel jelölt függvények hattatása, ahol az élek az egyes függvények hattatásának sorrendjét jelzik. A folyamat lépései sorrendben:
+    \begin{enumerate}
+        \item Normalizáció, így minden paraméter értékkészlete a $[0; 1]$ intervallum.
+        \item Távolságok meghatározása mind a bemeneti adathalmazon, mind a kimenetin, minden egyes homogén entitáspárra. Itt nem határoztuk meg pontosan, mit értünk távolság alatt, csupán az egyes paraméterekre (tehát a paraméterenkénti távolság és az entitások távolsága közti összefüggést nem definiáltuk pontosan).
+        Opcionálisan végrehajthatunk súlyozást a lépés során (előtt\footnote{Lásd: entitássúlyozás}); ennek különböző okai lehetnek (lásd fentebb).
+        \item Be- és kimeneti szálak összevonása, a különbségváltozások meghatározásával.
+        \item Egyszerű aggregált értékként megkapjuk $u$-t az egyes osztályok igazságtalansági mértékéből.
+        \item Megkapjuk a keresett $f$ értéket.
+    \end{enumerate}
 
-    \subsection{Algoritmusfüggetlenség}
+    \subsection{A követelmények teljesülése}
     
-    Az ismertetett folyamat során hagytunk szabad teret mind a problémadefiníciónak, a pontos távolságdefiníciónak, és a beosztási algoritmusnak is. Ezzel az első\footnote{Muszáj megemlítenünk, hogy a problémadefiníció még mindig korlátozott, hiszen az entitásfüggetlen modellt megköveteljük.} és második meghatározott kritériumot teljesítettük. Tegyük hozzá, hogy lehetséges bevonni a paraméterek szemantikáját, ha meghatározunk súlyokat.
+    Vizsgáljuk meg a bevezetésben meghatározott követelmények teljesülését:
     
-    A harmadik kritérium is teljesül, ha és amennyiben nem használunk súlyozást, vagy automatizált módszereket vetünk be annak pontos meghatározására.
+    \begin{itemize}
+        \item[1-2.] Az ismertetett folyamat során hagytunk szabad teret mind a problémadefiníciónak, a pontos távolságdefiníciónak, és a beosztási algoritmusnak is. Ezzel az első\footnote{Muszáj megemlítenünk, hogy a problémadefiníció még mindig korlátozott, hiszen az entitáspáronként független modellt megköveteljük.} és második meghatározott kritériumot teljesítettük. Tegyük hozzá, hogy lehetséges bevonni a paraméterek szemantikáját, ha meghatározunk súlyokat.
     
-    A negyedik kritérium egyértelműen teljesül; a kérdés pusztán az lehet, hogy a kapott eredmény mekkora kifejezőerővel bír, mennyire megbizható, stb.
+        \item[3.] A harmadik kritérium is teljesül, ha és amennyiben nem használunk súlyozást, vagy automatizált módszereket vetünk be annak pontos meghatározására.
+    
+        \item[4.] A negyedik kritérium egyértelműen teljesül; a kérdés pusztán az lehet, hogy a kapott eredmény mekkora kifejezőerővel bír, mennyire megbizható, stb.
+    \end{itemize}
+    
+    Tehát a kiinduláskor megállapított követelményeink (nagyrészt) teljesülnek.
     
 \section{További lehetőségek}
 
     Az itt leírtak alapján szükség lesz egy esettanulmányra, hogy az algoritmus helyességét és hasznosságát teszteljük. Ehhez szükség van még megfelelő tesztek előállítására is, itt értve a be- és kimeneteket.
     
     A módszert lehet tovább is elemezni, hiszen több aggály, fejlesztési lehetőség is felmerült (lásd a problémás szekciókat).
+    
+    A leghasznosabb további lépés pedig az lenne, ha találnánk módszert arra, hogy nem-izomorf beosztások igazsága közt relációt állítsunk.
+    
+    \iffalse
+    % Innentől ez egy komment egészen a fi-ig.
+    
+    \begin{equation*}
+        f(S) = 1 -
+        \frac{\sum\limits_{e \in E_S} \sum\limits_{x \sim y} 
+                \left|
+                \sqrt{\sum\limits_{i=1}^{|e|}(\nu_i(\subin x) - \nu_i(\subin y))^2} 
+                - \sqrt{\sum\limits_{i=1}^{|e|}(\nu_i(\subout x) - \nu_i(\subout y))^2} 
+                \right|
+            }
+        {\sum\limits_{e \in E_S} \binom{|G(e)|}{2} \hat{\delta}_e}
+    \end{equation*}
+    
+    \begin{equation*}
+        \nu(u) = \frac{u - \check u}{\hat u - \check u}
+    \end{equation*}
+    \begin{equation*}
+        d_e(x, y) = \sqrt{\sum\limits_{i=1}^{|e|}(x - y)^2} 
+    \end{equation*}
+    
+    \fi
     
 \end{document}
